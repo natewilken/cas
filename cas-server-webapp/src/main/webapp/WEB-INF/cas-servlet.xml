@@ -9,6 +9,7 @@
     <import resource="spring-configuration/propertyFileConfigurer.xml" />
 
 	<!-- Theme Resolver -->
+	<!--
 	<bean id="themeResolver" class="org.jasig.cas.services.web.ServiceThemeResolver"
 		p:defaultThemeName="${cas.themeResolver.defaultThemeName}"
         p:argumentExtractors-ref="argumentExtractors"
@@ -22,6 +23,10 @@
             </map>
         </property>
     </bean>
+    -->
+	<bean id="themeResolver" class="edu.asu.cas.web.HttpHeaderOverrideThemeResolver"
+	    p:defaultThemeName="${cas.themeResolver.defaultThemeName}"
+	    p:argumentExtractors-ref="argumentExtractors" />
 
 	<!-- View Resolver -->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver"
@@ -58,6 +63,10 @@
 				<prop
 					key="/logout">
 					logoutController
+				</prop>
+				<prop
+					key="/logoutCallback">
+					logoutCallbackController
 				</prop>
 				<prop
 					key="/serviceValidate">
@@ -204,6 +213,9 @@
 		p:logoutView="casLogoutView"
 		p:warnCookieGenerator-ref="warnCookieGenerator"
 		p:ticketGrantingTicketCookieGenerator-ref="ticketGrantingTicketCookieGenerator" />
+	
+	<bean id="logoutCallbackController" class="org.jasig.cas.web.LogoutCallbackController"
+		p:logoutCallbackView="casLogoutCallbackView" />
 	
 	<bean id="initialFlowSetupAction" class="org.jasig.cas.web.flow.InitialFlowSetupAction"
 		p:argumentExtractors-ref="argumentExtractors"

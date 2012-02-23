@@ -8,6 +8,7 @@ package org.jasig.cas.ticket.registry;
 import java.util.List;
 
 import org.jasig.cas.authentication.Authentication;
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.ticket.ExpirationPolicy;
 import org.jasig.cas.ticket.ServiceTicket;
@@ -153,9 +154,10 @@ public abstract class AbstractDistributedTicketRegistry extends AbstractTicketRe
             return t;
         }
 
-        public void expire() {
-            this.getTicket().expire();
+        public List<LogoutResponse> expire() {
+            List<LogoutResponse> logoutResponses = this.getTicket().expire();
             updateTicket();
+            return logoutResponses;
         }
 
         public boolean isRoot() {

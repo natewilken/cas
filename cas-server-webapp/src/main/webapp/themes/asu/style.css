@@ -1,0 +1,302 @@
+/* =Globals
+-------------------------------------------------------- */
+a:link,
+a:visited,
+a:hover,
+a:active {
+   text-decoration: none;
+   color: #903;
+   }
+   
+a:hover,
+a:active {
+   color: #c60;
+}
+
+/* =Layout
+-------------------------------------------------------- */
+html {
+	background: #fff;
+	margin: 0; padding: 0;
+	font: 12px arial,helvetica,sans-serif;
+}
+
+#login_container {
+	margin: 30px auto 0;
+	border:1px solid #eee;
+	background: #D4D4D4;
+	width: 542px;
+}
+   
+#header {
+   background: #ffcb66 left bottom no-repeat;
+   height: 38px;
+   padding: 11px 0 11px 17px;
+}
+
+#header h1 {
+	margin: 0;
+}
+
+#header h1 a{
+	background: url(images/asu_logo.gif) no-repeat scroll 0 0;
+	height: 38px;
+	width: 234px;
+	text-indent: -1000px;
+	display: block;
+	overflow: hidden;
+}
+
+#ad {
+	/* save space for the ad so the page doesn't jump */
+	height: 90px;
+	/*border-left: 1px solid #D4D4D4;
+	border-right: 1px solid #D4D4D4;*/
+	overflow: hidden;	
+}
+   
+#login {
+	margin: 0 auto 12px auto;
+	padding: 0;
+	width: 360px;
+}
+
+#login h2, #logout h2 {
+	background: white url(images/boxtop_ccc.gif) repeat-x scroll bottom;
+	padding: 6px 0;
+	margin: 0;
+	font-weight: bold;
+	font-size: 14px;
+	color: #222;
+	text-align: center;
+	border: 1px solid #CCC;
+	border-bottom-width: 0;
+	border-top-width: 0;
+}
+
+#login .content, #logout .content {
+	border: 1px solid #CCC;
+	background: #eee;
+	margin: 0;
+	padding: 15px 7px 10px;
+}
+
+#login .label label {
+   margin: 0;
+   font-weight: bold;
+   font-size: 13px;
+}
+
+#login span {
+	display: block;	
+	font-size: 11px;
+}
+
+#login .label a {
+	color: #FF6801;
+}
+#login .label a:hover {
+	color: #903;
+}
+#login .label {
+	float: left;
+	width: 125px;
+	text-align: right;
+	margin-bottom: 5px;
+	padding-top: 3px;
+}
+
+#login .section {
+	overflow: hidden;
+}
+
+#login input.text {
+	background: #fff;
+	color: #000;
+	border: 1px solid #ccc;
+	width: 192px;
+	height: 19px;
+	margin: 1px 3px 1px 7px;
+	padding: 2px 2px 0 2px;
+	
+}
+
+#login input.submit {
+	clear: both;
+	cursor: pointer;
+	border: none;
+	width: 58px; height: 24px;
+	margin-left: 134px;
+	padding-bottom: 2px;
+	background: transparent url(images/login_btn3.gif) 0 0 no-repeat;
+	color: #903;
+	font: bold 12px/24px arial,sans-serif;
+}
+#login input.submit:hover {
+	color: #fff;
+	background-position: 0 -25px;
+}
+
+#logout .headline, #logout .subtext {
+	font-weight: bold;
+	text-align: center;
+}
+#logout .headline {
+	color: #333;
+	font-size: 22px;
+	line-height: 35px;
+}
+#logout .headline img {
+	vertical-align: middle;
+}
+
+#logout {
+        margin: 0 auto 12px auto;
+        padding: 0;
+        width:96%
+}
+
+#logout_complete{
+		display: none;
+        font-weight: bold;
+        text-align: left;
+        padding-left: 15px;
+}
+
+#logout_complete .headline span{
+        padding-left: 10px;
+}
+
+#logout_complete .headline{
+        font-size: 2em;
+        text-align: left;
+        
+}
+
+#logout_complete .subtext{
+        font-size: 1.2em;
+        text-align: left;
+        padding-left: 50px;
+        padding-bottom: 10px;
+        line-height: 25px;
+}
+
+#submit_wrapper {
+	clear: both;
+}
+
+#remember {
+	clear: both;
+	padding-left: 5px;
+	font-size: 10px;
+	color: #666;
+	vertical-align: middle;
+	display: none; /* hide for now */
+	margin-top: -3px;
+}
+
+#remember input.checkbox {
+	vertical-align: middle;
+}
+
+#help {
+	text-align: center;
+}
+
+.error {
+	text-align: center;
+	margin: 0 auto 15px;
+	width: 360px;
+	padding: 10px 0;
+	background:#ffebe8;
+	border:1px solid #dd3c10
+}
+.error .title {
+	font-weight: bold;
+	font-size: 13px;
+	color: #dd3c10;
+	padding-bottom: 3px;
+}
+
+#login .internal_error {
+	text-align: center;
+	padding: 10px 10px 15px;
+	line-height: 150%;
+}
+
+#footer {
+   background: #000;
+   margin: 0; padding: 4px 0;
+   text-align: center;
+   color: #ccc;
+}
+
+#footer a {
+	color: #ccc;
+	padding: 0 5px;
+}
+
+#footer a:hover {
+	color: #fff;	
+}
+
+#outages {
+	text-align: center;
+	color: #444;
+}
+.clear {
+   clear: both;
+}
+#recaptcha_widget .recaptcha_only_if_incorrect_sol {
+	color: red;
+	text-align: center;
+}
+#recaptcha_widget #recaptcha_image {
+	border: 1px solid #ccc;
+	float: left;
+	width: 300px;
+	margin-left: 9px;
+}
+#recaptcha_powered {
+	color: #666;
+	font-size: 85%;
+	margin-left: 9px;
+	margin-bottom: 5px;
+}
+#recaptcha_widget .recaptcha_tools {
+	float: left;
+	width: 16px;
+	margin-left: 5px;
+}
+#recaptcha_widget .recaptcha_tools a {
+	display: block;
+	width: 16px; height: 16px;
+	text-indent: -100px;
+	overflow: hidden;
+	margin-bottom: 3px;
+	background: url(images/recaptcha.gif);
+}
+#recaptcha_widget a.recaptcha_refresh {
+	background-position: 0 -68px;
+}
+#recaptcha_widget a.recaptcha_refresh:hover {
+	background-position: 0 -85px;
+}
+#recaptcha_widget a.recaptcha_audio {
+	background-position: 0 -34px;
+}
+#recaptcha_widget a.recaptcha_audio:hover {
+	background-position: 0 -51px;
+}
+#recaptcha_widget a.recaptcha_text {
+	background-position: 0 -102px;
+}
+#recaptcha_widget a.recaptcha_text:hover {
+	background-position: 0 -119px;
+}
+#recaptcha_widget a.recaptcha_help {
+	background-position: 0 0;
+}
+#recaptcha_widget a.recaptcha_help:hover {
+	background-position: 0 -17px;
+}

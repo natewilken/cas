@@ -1,0 +1,1 @@
+ASULogin.onLoad();

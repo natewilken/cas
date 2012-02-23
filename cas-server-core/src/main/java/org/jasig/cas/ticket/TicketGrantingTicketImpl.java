@@ -17,6 +17,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.jasig.cas.authentication.Authentication;
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,22 +114,30 @@ public final class TicketGrantingTicketImpl extends AbstractTicket implements
         return serviceTicket;
     }
     
-    private void logOutOfServices() {
+    private List<LogoutResponse> logOutOfServices() {
+    	List<LogoutResponse> logoutResponses = new ArrayList<LogoutResponse>();
+
         for (final Entry<String, Service> entry : this.services.entrySet()) {
 
-            if (!entry.getValue().logOutOfService(entry.getKey())) {
+        	LogoutResponse lr = entry.getValue().logOutOfService(entry.getKey());
+        	if (!lr.isLoggedOut()) {
                 LOG.warn("Logout message not sent to [" + entry.getValue().getId() + "]; Continuing processing...");   
             }
+        	if (lr.getSignoutUrl() != null) {
+        		logoutResponses.add(lr);
+        	}
         }
+        
+        return logoutResponses;
     }
 
     public boolean isRoot() {
         return this.getGrantingTicket() == null;
     }
 
-    public synchronized void expire() {
+    public synchronized List<LogoutResponse> expire() {
         this.expired = true;
-        logOutOfServices();
+        return logOutOfServices();
     }
 
     public boolean isExpiredInternal() {

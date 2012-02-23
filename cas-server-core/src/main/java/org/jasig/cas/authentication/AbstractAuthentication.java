@@ -18,12 +18,16 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractAuthentication implements Authentication {
 
+	// wilken@asu.edu: removed final from fields and added no-arg constructor to support deserialization
+	
     /** A Principal object representing the authenticated entity. */
-    private final Principal principal;
+    private Principal principal;
 
     /** Associated authentication attributes. */
-    private final Map<String, Object> attributes;
+    private Map<String, Object> attributes;
 
+    public AbstractAuthentication() {}
+    
     public AbstractAuthentication(final Principal principal,
         final Map<String, Object> attributes) {
         Assert.notNull(principal, "principal cannot be null");

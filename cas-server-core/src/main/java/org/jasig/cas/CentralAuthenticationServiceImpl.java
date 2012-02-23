@@ -11,6 +11,7 @@ import org.jasig.cas.authentication.AuthenticationManager;
 import org.jasig.cas.authentication.MutableAuthentication;
 import org.jasig.cas.authentication.handler.AuthenticationException;
 import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.PersistentIdGenerator;
 import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.Service;
@@ -41,6 +42,7 @@ import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +136,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
         resourceResolverName="DESTROY_TICKET_GRANTING_TICKET_RESOURCE_RESOLVER")
     @Profiled(tag = "DESTROY_TICKET_GRANTING_TICKET",logFailuresSeparately = false)
     @Transactional(readOnly = false)
-    public void destroyTicketGrantingTicket(final String ticketGrantingTicketId) {
+    public List<LogoutResponse> destroyTicketGrantingTicket(final String ticketGrantingTicketId) {
         Assert.notNull(ticketGrantingTicketId);
 
         if (log.isDebugEnabled()) {
@@ -143,14 +145,16 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
         final TicketGrantingTicket ticket = (TicketGrantingTicket) this.ticketRegistry.getTicket(ticketGrantingTicketId, TicketGrantingTicket.class);
 
         if (ticket == null) {
-            return;
+            return Collections.emptyList();
         }
 
         if (log.isDebugEnabled()) {
             log.debug("Ticket found.  Expiring and then deleting.");
         }
-        ticket.expire();
+        List<LogoutResponse> logoutResponses = ticket.expire();
         this.ticketRegistry.deleteTicket(ticketGrantingTicketId);
+        
+        return logoutResponses;
     }
 
     /**

@@ -5,7 +5,10 @@
  */
 package org.jasig.cas;
 
+import java.util.List;
+
 import org.jasig.cas.authentication.principal.Credentials;
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.ticket.TicketException;
 import org.jasig.cas.validation.Assertion;
@@ -87,8 +90,9 @@ public interface CentralAuthenticationService {
      * Ticket that was derived from the TicketGrantingTicket being destroyed.
      * 
      * @param ticketGrantingTicketId the id of the ticket we want to destroy
+     * @return list of LogoutResponse objects that should be referenced to log the user out of other apps
      */
-    void destroyTicketGrantingTicket(final String ticketGrantingTicketId);
+    List<LogoutResponse> destroyTicketGrantingTicket(final String ticketGrantingTicketId);
 
     /**
      * Delegate a TicketGrantingTicket to a Service for proxying authentication

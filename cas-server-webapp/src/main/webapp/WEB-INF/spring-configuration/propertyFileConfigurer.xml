@@ -10,6 +10,11 @@
 		can be moved between tiers without modification.
 	</description>
        
+    <!-- 
 	<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
 		p:location="/WEB-INF/cas.properties" />
+	-->
+	<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+        p:location="file:///usr/local/webauth/etc/cas.properties" />
+		
 </beans>

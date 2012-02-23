@@ -90,7 +90,7 @@
 					| edu.someschool.its.cas.MySpecialHandler here, or you might use one of the handlers provided in the adaptors modules.
 					+-->
 				<bean
-					class="org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler" />
+					class="edu.asu.cas.authentication.handler.support.JaasAuthenticationHandler" />
 			</list>
 		</property>
 	</bean>
@@ -105,7 +105,9 @@
     <!-- <sec:user name="@@THIS SHOULD BE REPLACED@@" password="notused" authorities="ROLE_ADMIN" />-->
 
     <sec:user-service id="userDetailsService">
-        <sec:user name="@@THIS SHOULD BE REPLACED@@" password="notused" authorities="ROLE_ADMIN" />
+        <sec:user name="exnate" password="notused" authorities="ROLE_ADMIN" />
+        <sec:user name="kgjam" password="notused" authorities="ROLE_ADMIN" />
+        <sec:user name="prjt2000" password="notused" authorities="ROLE_ADMIN" />
     </sec:user-service>
 	
 	<!-- 
@@ -127,7 +129,6 @@
 	Sample, in-memory data store for the ServiceRegistry. A real implementation
 	would probably want to replace this with the JPA-backed ServiceRegistry DAO
 	The name of this bean should remain "serviceRegistryDao".
-	 -->
 	<bean
 		id="serviceRegistryDao"
         class="org.jasig.cas.services.InMemoryServiceRegistryDaoImpl">
@@ -167,6 +168,12 @@
                 </list>
             </property>
         </bean>
+	 -->
+	<bean id="serviceRegistryDao" class="edu.asu.cas.riak.RiakServiceRegistryDao">
+		<constructor-arg index="0" type="java.lang.String" value="http://localhost:3002/guster"/> <!-- url -->
+		<constructor-arg index="1" type="int" value="30000"/> <!-- timeoutMilliseconds -->
+		<constructor-arg index="2" type="int" value="50"/> <!-- maxConnections -->
+	</bean>
 
     <bean id="auditTrailManager" class="com.github.inspektr.audit.support.Slf4jLoggingAuditTrailManager" />
 </beans>

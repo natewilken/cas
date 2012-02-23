@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractWebApplicationService implements WebApplicationService {
 
+	// wilken@asu.edu: removed final from fields and added no-arg constructor to support json deserialization
+	
     protected static final Logger LOG = LoggerFactory.getLogger(SamlService.class);
     
     private static final Map<String, Object> EMPTY_MAP = Collections.unmodifiableMap(new HashMap<String, Object>());
@@ -33,18 +35,20 @@ public abstract class AbstractWebApplicationService implements WebApplicationSer
     private static final UniqueTicketIdGenerator GENERATOR = new DefaultUniqueTicketIdGenerator();
     
     /** The id of the service. */
-    private final String id;
+    private String id;
     
     /** The original url provided, used to reconstruct the redirect url. */
-    private final String originalUrl;
+    private String originalUrl;
 
-    private final String artifactId;
+    private String artifactId;
     
     private Principal principal;
     
     private boolean loggedOutAlready = false;
     
-    private final HttpClient httpClient;
+    private HttpClient httpClient;
+    
+    protected AbstractWebApplicationService() {}
     
     protected AbstractWebApplicationService(final String id, final String originalUrl, final String artifactId, final HttpClient httpClient) {
         this.id = id;
@@ -132,9 +136,9 @@ public abstract class AbstractWebApplicationService implements WebApplicationSer
         return this.id.equals(service.getId());
     }
     
-    public synchronized boolean logOutOfService(final String sessionIdentifier) {
+    public synchronized LogoutResponse logOutOfService(final String sessionIdentifier) {
         if (this.loggedOutAlready) {
-            return true;
+            return new LogoutResponse(true);
         }
 
         LOG.debug("Sending logout request for: " + getId());
@@ -148,9 +152,9 @@ public abstract class AbstractWebApplicationService implements WebApplicationSer
         this.loggedOutAlready = true;
         
         if (this.httpClient != null) {
-            return this.httpClient.sendMessageToEndPoint(getOriginalUrl(), logoutRequest, true);
+            return new LogoutResponse(this.httpClient.sendMessageToEndPoint(getOriginalUrl(), logoutRequest, true), sessionIdentifier, getOriginalUrl(), logoutRequest);
         }
         
-        return false;
+        return new LogoutResponse(false);
     }
 }

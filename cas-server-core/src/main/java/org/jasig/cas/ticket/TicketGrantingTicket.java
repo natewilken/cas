@@ -8,6 +8,7 @@ package org.jasig.cas.ticket;
 import java.util.List;
 
 import org.jasig.cas.authentication.Authentication;
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Service;
 
 /**
@@ -46,8 +47,9 @@ public interface TicketGrantingTicket extends Ticket {
      * Explicitly expire a ticket.  This method will log out of any service associated with the
      * Ticket Granting Ticket.
      * 
+     * @return list of LogoutResponse objects that should be referenced to log the user out of other apps
      */
-    void expire();
+    List<LogoutResponse> expire();
 
     /**
      * Convenience method to determine if the TicketGrantingTicket is the root

@@ -18,6 +18,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.jasig.cas.authentication.handler.DefaultPasswordEncoder;
 import org.jasig.cas.authentication.handler.PasswordEncoder;
 import org.jasig.cas.authentication.principal.AbstractWebApplicationService;
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,8 +96,8 @@ public final class OpenIdService extends AbstractWebApplicationService {
         return Response.getRedirectResponse(getOriginalUrl(), parameters);
     }
 
-    public boolean logOutOfService(final String sessionIdentifier) {
-        return false;
+    public LogoutResponse logOutOfService(final String sessionIdentifier) {
+        return new LogoutResponse(false);
     }
 
     public static OpenIdService createServiceFrom(

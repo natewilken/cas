@@ -20,15 +20,19 @@ import org.springframework.util.Assert;
 public final class MultiTimeUseOrTimeoutExpirationPolicy implements
     ExpirationPolicy {
 
+	// wilken@asu.edu: removed final from fields and added no-arg constructor to support deserialization
+
     /** Serializable Unique ID. */
     private static final long serialVersionUID = 3257844372614558261L;
 
     /** The time to kill in millseconds. */
-    private final long timeToKillInMilliSeconds;
+    private long timeToKillInMilliSeconds;
 
     /** The maximum number of uses before expiration. */
-    private final int numberOfUses;
+    private int numberOfUses;
 
+    public MultiTimeUseOrTimeoutExpirationPolicy() {}
+    
     public MultiTimeUseOrTimeoutExpirationPolicy(final int numberOfUses,
         final long timeToKillInMilliSeconds) {
         this.timeToKillInMilliSeconds = timeToKillInMilliSeconds;

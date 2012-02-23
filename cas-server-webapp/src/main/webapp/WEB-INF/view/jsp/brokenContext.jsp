@@ -1,4 +1,5 @@
-<jsp:directive.include file="default/ui/includes/top.jsp" />
+<jsp:directive.include file="/WEB-INF/view/jsp/asu/ui/includes/top.jsp" />
+
 	<div id="welcome">
 			<h2>CAS is Unavailable</h2>
 
@@ -39,5 +40,11 @@
 			</p>
 			</c:if>
 	</div>
-<jsp:directive.include file="default/ui/includes/bottom.jsp" />
+	
+<jsp:directive.include file="/WEB-INF/view/jsp/asu/ui/includes/bottom.jsp" />
+
+	<script type="text/javascript" src="js/asu-signin.js"></script>
+	<script type="text/javascript" src="themes/asu/onload.js"></script>
+</body>
+</html>
 

@@ -59,7 +59,7 @@ public class UsernamePasswordCredentials implements Credentials {
      * @param userName The userName to set.
      */
     public final void setUsername(final String userName) {
-        this.username = userName;
+        this.username = (userName != null) ? userName.toLowerCase() : userName;
     }
 
     public String toString() {

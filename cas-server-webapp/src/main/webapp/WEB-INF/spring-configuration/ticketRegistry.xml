@@ -8,10 +8,15 @@
     </description>
        
     <!-- Ticket Registry -->
-	<bean id="ticketRegistry" class="org.jasig.cas.ticket.registry.DefaultTicketRegistry" />
+	<bean id="ticketRegistry" class="edu.asu.cas.riak.RiakCasTicketRegistry">
+		<constructor-arg index="0" type="java.lang.String" value="http://localhost:3002/guster"/> <!-- url -->
+		<constructor-arg index="1" type="int" value="3000"/> <!-- timeoutMilliseconds -->
+		<constructor-arg index="2" type="int" value="50"/> <!-- maxConnections -->
+	</bean>
 	
 	<!--Quartz -->
 	<!-- TICKET REGISTRY CLEANER -->
+	<!-- 
 	<bean id="ticketRegistryCleaner" class="org.jasig.cas.ticket.registry.support.DefaultTicketRegistryCleaner"
 		p:ticketRegistry-ref="ticketRegistry" />
 	
@@ -23,4 +28,5 @@
 		p:jobDetail-ref="jobDetailTicketRegistryCleaner"
 		p:startDelay="20000"
 		p:repeatInterval="5000000" />
+	-->
 </beans>

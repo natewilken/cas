@@ -5,11 +5,19 @@
  */
 package org.jasig.cas.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
+import org.apache.log4j.Logger;
 import org.jasig.cas.CentralAuthenticationService;
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.web.support.CookieRetrievingCookieGenerator;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -59,19 +67,44 @@ public final class LogoutController extends AbstractController {
         final String ticketGrantingTicketId = this.ticketGrantingTicketCookieGenerator.retrieveCookieValue(request);
         final String service = request.getParameter("service");
 
+        List<LogoutResponse> logoutResponses = null;
+        List<String> logoutResponseKeys = new ArrayList<String>();
+
+        boolean foundGoogleSession = false;
+        
         if (ticketGrantingTicketId != null) {
-            this.centralAuthenticationService
+            logoutResponses = this.centralAuthenticationService
                 .destroyTicketGrantingTicket(ticketGrantingTicketId);
 
+            
+            if (!logoutResponses.isEmpty()) {
+            	HttpSession session = request.getSession(true);
+            	
+            	for (LogoutResponse logoutResponse : logoutResponses) {
+            		String id = logoutResponse.getSessionIdentifier();
+            		if (id != null && !id.matches("\\s*")) {
+            			session.setAttribute("logoutResponseKey." + id, logoutResponse);
+            			logoutResponseKeys.add(id);
+            		}
+            		if (logoutResponse.getSignoutUrl().contains("/google-sso/Authn?")) {
+            			foundGoogleSession = true;
+            		}
+            	}
+            }
+            
             this.ticketGrantingTicketCookieGenerator.removeCookie(response);
             this.warnCookieGenerator.removeCookie(response);
         }
+
+        Map<String,Object> model = new HashMap<String,Object>();
+        model.put("logoutResponseKeys", logoutResponseKeys);
+        model.put("foundGoogleSession", foundGoogleSession);
 
         if (this.followServiceRedirects && service != null) {
             return new ModelAndView(new RedirectView(service));
         }
 
-        return new ModelAndView(this.logoutView);
+        return new ModelAndView(this.logoutView, model);
     }
 
     public void setTicketGrantingTicketCookieGenerator(

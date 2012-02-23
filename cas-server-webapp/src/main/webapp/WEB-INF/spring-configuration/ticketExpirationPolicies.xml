@@ -18,14 +18,14 @@
 		<!-- This argument is the time a ticket can exist before its considered expired.  -->
 		<constructor-arg
 			index="1"
-			value="10000" />
+			value="300000" />
 	</bean>
 	
-	<bean id="grantingTicketExpirationPolicy" class="org.jasig.cas.ticket.support.TimeoutExpirationPolicy">
+	<bean id="grantingTicketExpirationPolicy" class="org.jasig.cas.ticket.support.HardTimeoutExpirationPolicy">
 		<!-- This argument is the time a ticket can exist before its considered expired.  -->
 		<constructor-arg
 			index="0"
-			value="7200000" />
+			value="32400000" /> <!-- 9 hours -->
 	</bean>
 
     <!-- sample config for new TicketGrantingTicketExpirationPolicy -->

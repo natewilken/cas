@@ -1,0 +1,182 @@
+body{
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	background-color: #cecece;
+	margin:0;
+	-webkit-user-select: none;
+    -webkit-text-size-adjust: none;
+}
+a {
+	color: #903;
+}
+
+#wrapper {
+	background-color: #cecece;
+	background: -moz-linear-gradient(100% 100% 90deg, #cecece, #e5e5e5);
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#e5e5e5), to(#cecece));
+}
+
+#header {
+	background: #fff;
+	padding: 5px 10px;
+	width: 100%;
+}
+
+#header h1 {
+	margin: 0;
+	overflow: hidden;
+}
+
+#header h1 a {
+	display: block;
+	width: 119px;
+	height: 25px;
+	font-size: 1px;
+	text-indent: -1000px;
+	background: url(images/mobile_asu.gif);	
+}
+
+#login, #logout {
+	padding: 10px;
+}
+
+#login h2, #logout h2 {
+	font-size: 16px;
+	margin: 0 0 10px 0;
+}
+
+#login .content, #logout .content {
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+#login input.text {
+	border: 1px solid #D9D9D9;
+	padding: 5px 7px;
+	width: 95%;
+	font-size: 18px;
+	-webkit-appearance: none;
+    -webkit-border-radius: 0;
+}
+
+#login input.submit {
+	color:#fff;	
+	padding:5px 12px;
+	border: 1px solid black;
+	background: black;
+	background: -moz-linear-gradient(100% 100% 90deg, #000, #333);
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#000));
+	font-size: 16px;
+	-webkit-border-radius: 0;
+}
+
+#login .label {
+	margin: 5px 0;
+}
+
+#login .label span {
+	display: none;
+}
+
+#logout .headline, #logout .subtext {
+	font-weight: bold;
+	text-align: center;
+}
+#logout .headline {
+	color: #333;
+	font-size: 22px;
+	line-height: 35px;
+}
+#logout .headline img {
+	vertical-align: middle;
+}
+
+#logout .subtext {
+	color: #777;
+	font-size: 20px;
+	line-height: 50px;
+}
+#logout_complete {
+	display: none;	
+}
+
+#submit_wrapper {
+	padding: 8px 0;
+}
+
+#remember {
+	display: none;
+	padding-left: 8px;
+}
+#remember input[type=checkbox] {
+	vertical-align: baseline;
+}
+
+#help {
+	font-size: .9em;
+	padding: 0 10px 10px;
+	border-bottom: 1px solid #d5d3d3;
+	margin: 0;
+	line-height: 25px;
+}
+#help .helpdesk {
+	white-space:nowrap;	
+}
+
+.error {
+	text-align: center;
+	padding: 10px;
+	margin-bottom: 10px;
+	background:#ffebe8;
+	border:1px solid #dd3c10
+}
+.error .title {
+	font-weight: bold;
+	color: #dd3c10;
+	padding-bottom: 3px;
+}
+
+#footer {
+	font-size: 12px;
+	border-top: 1px solid #f4efef;
+	padding: 10px;
+	color: #222;
+}
+
+#footer .desktop_links {
+	/*display: none;*/
+}
+
+#footer a {
+	color: #222;
+	margin: 0 2px;
+	padding: 0;
+}
+#footer a:first-child {
+	margin-left: 0;
+}
+
+#outages {
+	display: none;
+}
+
+#recaptcha_widget .section {
+	margin-bottom: 5px;
+}
+#recaptcha_widget #recaptcha_image {
+	border: 1px solid #D9D9D9;
+	margin-bottom: 5px;
+}
+#recaptcha_widget .recaptcha_tools a {
+	border-right: 1px solid #000;
+	padding-right: 10px;
+	margin-right: 5px;
+}
+#recaptcha_widget .recaptcha_tools a.recaptcha_help {
+	border-right: 0;	
+}
+#recaptcha_powered {
+	font-size: 85%;
+	margin-bottom: 5px;
+}

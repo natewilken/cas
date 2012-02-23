@@ -21,6 +21,8 @@ import org.springframework.util.Assert;
  */
 public class SimplePrincipal implements Principal {
 
+	// wilken@asu.edu: removed final from fields and added no-arg constructor to support deserialization
+	
     private static final Map<String, Object> EMPTY_MAP = Collections
         .unmodifiableMap(new HashMap<String, Object>());
 
@@ -30,11 +32,13 @@ public class SimplePrincipal implements Principal {
     private static final long serialVersionUID = -5265620187476296219L;
 
     /** The unique identifier for the principal. */
-    private final String id;
+    private String id;
 
     /** Map of attributes for the Principal. */
     private Map<String, Object> attributes;
 
+    public SimplePrincipal() {}
+    
     public SimplePrincipal(final String id) {
         this(id, null);
     }

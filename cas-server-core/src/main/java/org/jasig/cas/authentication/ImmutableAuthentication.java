@@ -26,14 +26,18 @@ import org.jasig.cas.authentication.principal.Principal;
  */
 public final class ImmutableAuthentication extends AbstractAuthentication {
 
+	// wilken@asu.edu: removed final from fields and added no-arg constructor to support deserialization
+
     /** UID for serializing. */
     private static final long serialVersionUID = 3906647483978365235L;
     
     private static final Map<String, Object> EMPTY_MAP = Collections.unmodifiableMap(new HashMap<String, Object>());
 
     /** The date/time this authentication object became valid. */
-    final Date authenticatedDate;
+    Date authenticatedDate;
 
+    public ImmutableAuthentication() {}
+    
     /**
      * Constructor that accepts both a principal and a map.
      * 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.Service;
 
@@ -121,8 +122,8 @@ public class DefaultServicesManagerImplTests extends TestCase {
             // nothing to do
         }
 
-        public boolean logOutOfService(String sessionIdentifier) {
-            return false;
+        public LogoutResponse logOutOfService(String sessionIdentifier) {
+            return new LogoutResponse(false);
         }
         
         public boolean matches(Service service) {

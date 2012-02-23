@@ -24,6 +24,8 @@ import org.springframework.util.StringUtils;
 public final class SimpleWebApplicationServiceImpl extends
     AbstractWebApplicationService {
 
+	// wilken@asu.edu: removed final from fields and added no-arg constructor to support json deserialization
+
     private static final String CONST_PARAM_SERVICE = "service";
 
     private static final String CONST_PARAM_TARGET_SERVICE = "targetService";
@@ -32,12 +34,14 @@ public final class SimpleWebApplicationServiceImpl extends
 
     private static final String CONST_PARAM_METHOD = "method";
 
-    private final ResponseType responseType;
+    private ResponseType responseType;
 
     /**
      * Unique Id for Serialization
      */
     private static final long serialVersionUID = 8334068957483758042L;
+    
+    public SimpleWebApplicationServiceImpl() {}
     
     public SimpleWebApplicationServiceImpl(final String id) {
         this(id, id, null, null, null);

@@ -153,8 +153,8 @@ public class GoogleAccountsService extends AbstractWebApplicationService {
      * 
      * @see org.jasig.cas.authentication.principal.WebApplicationService#logOutOfService(java.lang.String)
      */
-    public boolean logOutOfService(final String sessionIdentifier) {
-        return false;
+    public LogoutResponse logOutOfService(final String sessionIdentifier) {
+        return new LogoutResponse(false);
     }
 
     private String constructSamlResponse() {

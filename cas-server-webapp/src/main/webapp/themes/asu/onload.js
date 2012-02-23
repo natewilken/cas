@@ -1,0 +1,2 @@
+ASULogin.onLoad();
+ASULogin.selectAd();

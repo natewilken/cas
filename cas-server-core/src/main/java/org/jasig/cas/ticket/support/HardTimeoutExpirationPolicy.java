@@ -18,12 +18,16 @@ import org.jasig.cas.ticket.TicketState;
  */
 public final class HardTimeoutExpirationPolicy implements ExpirationPolicy {
 
+	// wilken@asu.edu: removed final from field and added no-arg constructor to support deserialization
+	
 	/** Unique Id for serialization. */
     private static final long serialVersionUID = -1465997330804816888L;
     
     /** The time to kill in milliseconds. */
-	private final long timeToKillInMilliSeconds;
+	private long timeToKillInMilliSeconds;
 
+	public HardTimeoutExpirationPolicy() {}
+	
 	public HardTimeoutExpirationPolicy(final long timeToKillInMilliSeconds) {
 		this.timeToKillInMilliSeconds = timeToKillInMilliSeconds;
 	}

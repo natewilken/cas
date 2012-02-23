@@ -20,6 +20,7 @@ package org.jasig.cas.mock;
 
 import java.util.Map;
 
+import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.Response;
 import org.jasig.cas.authentication.principal.Service;
@@ -49,9 +50,9 @@ public class MockService implements Service {
         return null;
     }
 
-    public boolean logOutOfService(final String sessionIdentifier) {
+    public LogoutResponse logOutOfService(final String sessionIdentifier) {
         this.loggedOut = true;
-        return false;
+        return new LogoutResponse(false);
     }
     
     public boolean isLoggedOut() {
