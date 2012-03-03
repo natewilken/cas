@@ -7,6 +7,7 @@
        http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd">
 
     <import resource="spring-configuration/propertyFileConfigurer.xml" />
+    <import resource="spring-configuration/throttlingInterceptor.xml" />
 
 	<!-- Theme Resolver -->
 	<!--
@@ -141,10 +142,25 @@
 
     <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping" p:flowRegistry-ref="flowRegistry" p:order="2">
         <property name="interceptors">
-            <ref local="localeChangeInterceptor" />
+        	<list>
+            	<ref local="localeChangeInterceptor" />
+            	<ref local="throttlingInterceptor" />
+            </list>
         </property>
     </bean>
 
+	<bean id="throttlingInterceptor" class="edu.asu.cas.web.support.ThrottlingInterceptor"
+		p:failureThreshold="${cas.throttling.failureThreshold}"
+		p:failureRangeSeconds="${cas.throttling.failureRangeSeconds}"
+		p:lockoutPeriodSeconds="${cas.throttling.lockoutPeriodSeconds}" />
+
+	<bean id="throttlingInterceptorJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"
+		p:targetObject-ref="throttlingInterceptor" p:targetMethod="vacuum" />
+
+	<bean id="periodicThrottleCleanerTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean"
+		p:jobDetail-ref="throttlingInterceptorJobDetail" p:startDelay="600000"
+		p:repeatInterval="600000" />
 
      <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter"
         p:flowExecutor-ref="flowExecutor"
