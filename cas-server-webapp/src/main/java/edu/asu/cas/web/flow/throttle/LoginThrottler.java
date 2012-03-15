@@ -1,4 +1,4 @@
-package edu.asu.cas.web.support;
+package edu.asu.cas.web.flow.throttle;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
@@ -6,27 +6,26 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.jasig.cas.web.support.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
 import org.springframework.webflow.execution.RequestContext;
 
-public class ThrottlingInterceptor extends HandlerInterceptorAdapter {
+
+public class LoginThrottler {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ThrottlingInterceptor.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginThrottler.class);
 
 	protected static final int DEFAULT_FAILURE_THRESHOLD = 25;
 	protected static final int DEFAULT_FAILURE_RANGE_SECONDS = 600;
 	protected static final int DEFAULT_LOCKOUT_PERIOD_SECONDS = 600;
 	protected static final String DEFAULT_USERNAME_PARAMETER = "username";
-	protected static final String SUCCESSFUL_AUTHENTICATION_EVENT = "success";
-
-	protected final ConcurrentHashMap<ThrottleKey, AttackProfile> map = new ConcurrentHashMap<ThrottleKey, AttackProfile>();
+	
+	protected final ConcurrentHashMap<ThrottleContext, AttackProfile> map = new ConcurrentHashMap<ThrottleContext, AttackProfile>();
 	
 	@Min(0)
 	protected int failureThreshold = DEFAULT_FAILURE_THRESHOLD;
@@ -39,58 +38,56 @@ public class ThrottlingInterceptor extends HandlerInterceptorAdapter {
 
 	@NotNull
 	protected String usernameParameter = DEFAULT_USERNAME_PARAMETER;
-
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		if (!"POST".equals(request.getMethod())) return true;
-
-		ThrottleKey throttleKey = new ThrottleKey(request.getParameter(usernameParameter), request.getRemoteAddr());
-		AttackProfile attackProfile = map.get(throttleKey);
+	
+	public ThrottleContext getThrottleContext(final RequestContext requestContext) {
+		HttpServletRequest request = WebUtils.getHttpServletRequest(requestContext);
+		return new UsernameAndIpAddressThrottleContext(request.getParameter(usernameParameter), request.getRemoteAddr());
+	}
+	
+	public boolean isLockedOut(final ThrottleContext throttleContext) {
+		AttackProfile attackProfile = map.get(throttleContext);
+		if (logger.isTraceEnabled()) {
+			logger.trace("throttle context [" + throttleContext + "] failures: " + (attackProfile == null || attackProfile.isEmpty() ? "empty" : attackProfile.failureQueue.size()));
+		}
 		
 		if (attackProfile != null && attackProfile.isLockedOut()) {
-			logger.warn("Authentication attempt blocked for user [" + throttleKey.username + "] from [" + throttleKey.ipAddress + "]");
-			response.sendError(HttpServletResponse.SC_FORBIDDEN);
-			return false;
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
-
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-		if (!"POST".equals(request.getMethod())) return;
-
-		RequestContext context = (RequestContext)request.getAttribute("flowRequestContext");
-		if (context == null || context.getCurrentEvent() == null) return;
-
-		ThrottleKey throttleKey = new ThrottleKey(request.getParameter(usernameParameter), request.getRemoteAddr());
-
-		if (SUCCESSFUL_AUTHENTICATION_EVENT.equals(context.getCurrentEvent().getId())) {
-			map.remove(throttleKey);
-			return;
-		}
-
-		// this was an auth failure; queue it
+	
+	public void registerFailure(final ThrottleContext throttleContext, final RequestContext requestContext) {
+		HttpServletRequest request = WebUtils.getHttpServletRequest(requestContext);
+		
 		FailureIncident failure = new FailureIncident(
 				request.getParameter(usernameParameter), request.getRemoteAddr(), request.getHeader("user-agent"));
 		
 		AttackProfile emptyAttackProfile = new AttackProfile(failureThreshold);
-		AttackProfile attackProfile = map.putIfAbsent(throttleKey, emptyAttackProfile);
+		AttackProfile attackProfile = map.putIfAbsent(throttleContext, emptyAttackProfile);
 		if (attackProfile == null) attackProfile = emptyAttackProfile;
 		
 		attackProfile.add(failure);
+		
+		if (logger.isTraceEnabled()) {
+			logger.trace("throttle context [" + throttleContext + "] failures: " + attackProfile.failureQueue.size());
+		}
+	}
+	
+	public void clearFailures(final ThrottleContext throttleContext) {
+		map.remove(throttleContext);
 	}
 	
 	public void vacuum() {
-		logger.info("cleaning expired throttling data");
-		for (ThrottleKey key : map.keySet()) {
+		logger.info("cleaning expired throttling data...");
+		for (ThrottleContext key : map.keySet()) {
 			AttackProfile candidate = map.get(key);
 			if (candidate.isEmpty()) {
-				logger.debug("removing throttling data for key [" + key.toString() + "]");
+				logger.debug("removing throttling data for [" + key + "]");
 				map.remove(key);
 			}
 		}
-		logger.info("finished cleaning expired throttling data");
+		logger.info("finished cleaning expired throttling data; remaining attack profile count: " + map.keySet().size());
 	}
 
 	public void setFailureThreshold(final int failureThreshold) {
@@ -109,45 +106,6 @@ public class ThrottlingInterceptor extends HandlerInterceptorAdapter {
 		this.usernameParameter = usernameParameter;
 	}
 
-	static class ThrottleKey {
-		final String username;
-		final String ipAddress;
-
-		public ThrottleKey(final String username, final String ipAddress) {
-			this.username = username;
-			this.ipAddress = ipAddress;
-		}
-
-		@Override
-		public String toString() {
-			return username + ", " + ipAddress;
-		}
-		
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((ipAddress == null) ? 0 : ipAddress.hashCode());
-			result = prime * result + ((username == null) ? 0 : username.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) return true;
-			if (obj == null) return false;
-			if (getClass() != obj.getClass()) return false;
-			ThrottleKey other = (ThrottleKey)obj;
-			if (ipAddress == null) {
-				if (other.ipAddress != null) return false;
-			} else if (!ipAddress.equals(other.ipAddress)) return false;
-			if (username == null) {
-				if (other.username != null) return false;
-			} else if (!username.equals(other.username)) return false;
-			return true;
-		}
-	}
-
 	class AttackProfile {
 		final DelayQueue<FailureIncident> failureQueue = new DelayQueue<FailureIncident>();
 		final DelayQueue<Lockout> lockoutQueue = new DelayQueue<Lockout>();
@@ -159,13 +117,17 @@ public class ThrottlingInterceptor extends HandlerInterceptorAdapter {
 		
 		protected void cleanFailures() {
 			while (true) {
-				if (failureQueue.poll() == null) break;
+				FailureIncident expiredIncident = failureQueue.poll();
+				if (expiredIncident == null) break;
+				logger.trace("removed expired failure incident [" + expiredIncident + "]");
 			}
 		}
 		
 		protected void cleanLockouts() {
 			while (true) {
-				if (lockoutQueue.poll() == null) break;
+				Lockout expiredLockout = lockoutQueue.poll();
+				if (expiredLockout == null) break;
+				logger.trace("removed expired lockout [" + expiredLockout + "]");
 			}
 		}
 		
@@ -185,8 +147,7 @@ public class ThrottlingInterceptor extends HandlerInterceptorAdapter {
 			cleanFailures();
 			
 			if (failureQueue.size() >= failureThreshold) {
-				logger.warn("Possible attack from [" + failure.ipAddress + "] for user ["
-						+ failure.username + "]; user-agent: " + failure.userAgent);
+				logger.warn("Possible attack: [" + failure + "]; user-agent: " + failure.userAgent);
 				
 				lockoutQueue.offer(new Lockout());
 			}
@@ -219,6 +180,11 @@ public class ThrottlingInterceptor extends HandlerInterceptorAdapter {
 		public Lockout() {
 			super(System.currentTimeMillis(), lockoutPeriodSeconds * 1000);
 		}
+		
+		@Override
+		public String toString() {
+			return super.eventTimeMillis + "ms, " + super.delayMillis + "ms";
+		}
 	}
 	
 	class FailureIncident extends ExpiringEvent {
@@ -231,6 +197,11 @@ public class ThrottlingInterceptor extends HandlerInterceptorAdapter {
 			this.username = username;
 			this.ipAddress = ipAddress;
 			this.userAgent = userAgent;
+		}
+		
+		@Override
+		public String toString() {
+			return username + ", " + ipAddress;
 		}
 	}
 

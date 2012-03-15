@@ -14,6 +14,9 @@ import org.jasig.cas.authentication.handler.support.AbstractUsernamePasswordAuth
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 import org.springframework.util.Assert;
 
+import sun.security.krb5.KrbException;
+
+@SuppressWarnings("restriction")
 public class JaasAuthenticationHandler extends AbstractUsernamePasswordAuthenticationHandler {
     private static final String DEFAULT_REALM = "CAS";
 
@@ -23,7 +26,7 @@ public class JaasAuthenticationHandler extends AbstractUsernamePasswordAuthentic
         Assert.notNull(Configuration.getConfiguration(), "Static Configuration cannot be null. Did you remember to specify \"java.security.auth.login.config\"?");
     }
 
-    protected final boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) throws AuthenticationException {
+	protected final boolean authenticateUsernamePasswordInternal(final UsernamePasswordCredentials credentials) throws AuthenticationException {
         final String transformedUsername = getPrincipalNameTransformer().transform(credentials.getUsername());
 
         try {
@@ -37,11 +40,14 @@ public class JaasAuthenticationHandler extends AbstractUsernamePasswordAuthentic
         	log.debug("authentication failed for \"" + transformedUsername + "\": " + le.getMessage());
         	Throwable cause = le.getCause();
         	if (cause != null) {
-        		log.trace("caused by: " + cause, cause);
+        		if (cause instanceof KrbException && ((KrbException)cause).returnCode() == 31) {
+        			// wrong password; no need for an enormous stack trace in the logs
+        		} else {
+        			log.trace("caused by: " + cause, cause);
+        		}
         	}
             return false;
         }
-        
         return true;
     }
 

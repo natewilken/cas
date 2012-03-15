@@ -55,16 +55,29 @@
         <on-entry>
             <set name="viewScope.commandName" value="'credentials'" />
         </on-entry>
-		<transition on="submit" bind="true" validate="true" to="realSubmit">
+		<transition on="submit" bind="true" validate="true" to="preSubmit">
             <evaluate expression="authenticationViaFormAction.doBind(flowRequestContext, flowScope.credentials)" />
         </transition>
 	</view-state>
 
+	<action-state id="preSubmit">
+		<evaluate expression="loginThrottlerAction.preSubmit(flowRequestContext)" />
+		<transition on="lockout" to="viewAccountLockoutView" />
+		<transition on="success" to="realSubmit" />
+	</action-state>
+	
 	<action-state id="realSubmit">
         <evaluate expression="authenticationViaFormAction.submit(flowRequestContext, flowScope.credentials, messageContext)" />
 		<transition on="warn" to="warn" />
+		<transition on="success" to="postSubmit" />
+		<transition on="error" to="postSubmit" />
+	</action-state>
+	
+	<action-state id="postSubmit">
+		<evaluate expression="loginThrottlerAction.postSubmit(flowRequestContext)" />
 		<transition on="success" to="sendTicketGrantingTicket" />
 		<transition on="error" to="generateLoginTicket" />
+		<transition on="lockout" to="viewAccountLockoutView" />
 	</action-state>
 	
 	<action-state id="sendTicketGrantingTicket">
@@ -126,6 +139,11 @@
     
     <end-state id="viewServiceSsoErrorView" view="viewServiceSsoErrorView" />
 
+	<end-state id="viewAccountLockoutView" view="casAccountLockoutView" />
+	<end-state id="viewAccountDisabledView" view="casAccountDisabledView" />
+	<end-state id="viewPasswordExpiredView" view="casPasswordExpiredView" />
+	<end-state id="viewPasswordWarningView" view="casPasswordWarningView" />
+	
 	<global-transitions>
 		<transition to="viewServiceErrorView" on-exception="org.springframework.webflow.execution.repository.NoSuchFlowExecutionException" />
         <transition to="viewServiceSsoErrorView" on-exception="org.jasig.cas.services.UnauthorizedSsoServiceException" />

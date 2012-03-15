@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
-import org.apache.log4j.Logger;
 import org.jasig.cas.CentralAuthenticationService;
 import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.web.support.CookieRetrievingCookieGenerator;
@@ -75,7 +74,6 @@ public final class LogoutController extends AbstractController {
         if (ticketGrantingTicketId != null) {
             logoutResponses = this.centralAuthenticationService
                 .destroyTicketGrantingTicket(ticketGrantingTicketId);
-
             
             if (!logoutResponses.isEmpty()) {
             	HttpSession session = request.getSession(true);

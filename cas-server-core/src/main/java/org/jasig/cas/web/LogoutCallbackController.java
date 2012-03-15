@@ -47,5 +47,5 @@ public final class LogoutCallbackController extends AbstractController {
     public void setLogoutCallbackView(final String logoutCallbackView) {
     	this.logoutCallbackView = logoutCallbackView;
     }
-        
+
 }

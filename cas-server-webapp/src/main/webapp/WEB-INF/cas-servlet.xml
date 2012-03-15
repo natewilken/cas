@@ -141,25 +141,9 @@
 
     <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping" p:flowRegistry-ref="flowRegistry" p:order="2">
         <property name="interceptors">
-        	<list>
-            	<ref local="localeChangeInterceptor" />
-            	<ref local="throttlingInterceptor" />
-            </list>
+           	<ref local="localeChangeInterceptor" />
         </property>
     </bean>
-
-	<bean id="throttlingInterceptor" class="edu.asu.cas.web.support.ThrottlingInterceptor"
-		p:failureThreshold="${cas.throttling.failureThreshold}"
-		p:failureRangeSeconds="${cas.throttling.failureRangeSeconds}"
-		p:lockoutPeriodSeconds="${cas.throttling.lockoutPeriodSeconds}" />
-
-	<bean id="throttlingInterceptorJobDetail"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"
-		p:targetObject-ref="throttlingInterceptor" p:targetMethod="vacuum" />
-
-	<bean id="periodicThrottleCleanerTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean"
-		p:jobDetail-ref="throttlingInterceptorJobDetail" p:startDelay="600000"
-		p:repeatInterval="600000" />
 
      <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter"
         p:flowExecutor-ref="flowExecutor"
@@ -236,6 +220,9 @@
 		p:argumentExtractors-ref="argumentExtractors"
 		p:warnCookieGenerator-ref="warnCookieGenerator"
 		p:ticketGrantingTicketCookieGenerator-ref="ticketGrantingTicketCookieGenerator" />
+	
+	<bean id="loginThrottlerAction" class="edu.asu.cas.web.flow.throttle.LoginThrottlerAction"
+		p:loginThrottler-ref="loginThrottler" />
 	
 	<bean id="authenticationViaFormAction" class="org.jasig.cas.web.flow.AuthenticationViaFormAction"
 		p:centralAuthenticationService-ref="centralAuthenticationService"

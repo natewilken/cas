@@ -116,11 +116,11 @@
         <appender-ref ref="cas" />
     </logger>
 
-	<logger name="edu.asu" additivity="false">
-		<level value="TRACE" />
-		<appender-ref ref="console" />
-	</logger>
-	
+    <logger name="edu.asu" additivity="false">
+        <level value="WARN" />
+        <appender-ref ref="console" />
+    </logger>
+
     <!--
       The root logger sends all log statements EXCEPT those sent to the perf4j
       logger to System.out.

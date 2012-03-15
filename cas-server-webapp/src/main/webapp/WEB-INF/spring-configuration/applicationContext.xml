@@ -49,6 +49,21 @@
           p:startDelay="120000"
           p:repeatInterval="120000"/>
 
+    <bean id="loginThrottler" class="edu.asu.cas.web.flow.throttle.LoginThrottler"
+          p:failureThreshold="${cas.throttling.failureThreshold}"
+          p:failureRangeSeconds="${cas.throttling.failureRangeSeconds}"
+          p:lockoutPeriodSeconds="${cas.throttling.lockoutPeriodSeconds}" />
+          
+    <bean id="loginThrottlerCleanerJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"
+          p:targetObject-ref="loginThrottler"
+          p:targetMethod="vacuum" />
+
+    <bean id="periodicLoginThrottlerCleanerTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean"
+          p:jobDetail-ref="loginThrottlerCleanerJobDetail"
+          p:startDelay="${cas.throttling.cleanerIntervalMillis}"
+          p:repeatInterval="${cas.throttling.cleanerIntervalMillis}" />
+
     <bean id="httpClient" class="org.jasig.cas.util.HttpClient"
           p:readTimeout="5000"
           p:connectionTimeout="5000"/>
