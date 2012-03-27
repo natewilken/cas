@@ -1,13 +1,14 @@
-			<p id="help">
-				<b>Need Help?</b><br />
-	        	Call the ASU Help Desk at <b>1-855-ASU-5080</b> (1-855-278-5080)
-	        </p>
-	        <div id="footer">
-		        <a href="http://asu.edu">ASU Home</a> |
-				<a href="http://www.asu.edu/copyright/">Copyright</a> |
-				<a href="http://www.asu.edu/aad/manuals/acd/acd125.html">Acceptable Use</a> |
-				<a href="http://www.asu.edu/privacy/">Privacy</a>
+			<div id="help">
+				<span class="teaser">Need Help?</span>
+				<span class="advice">Visit the <a href="http://help.asu.edu">Help Center</a> or call 1-855-ASU-5080 (1-855-278-5080)</span>
 	        </div>
-		</div>
+	        <ul id="footer">
+				<li><a href="http://systemstatus.asu.edu/">System Status</a></li>
+		        <li><a href="http://asu.edu">ASU Home</a></li>
+				<li><a href="http://www.asu.edu/copyright/">Copyright</a></li>
+				<li><a href="http://www.asu.edu/aad/manuals/acd/acd125.html">Acceptable Use</a></li>
+				<li><a href="http://www.asu.edu/privacy/">Privacy</a></li>
+	        </ul>
+	        </div>
+        </div>
 	</div>
-    <p id="outages">For information on system outages, visit: <a href="http://systemstatus.asu.edu/">http:&#047;&#047;systemstatus.asu.edu&#047;</a></p>

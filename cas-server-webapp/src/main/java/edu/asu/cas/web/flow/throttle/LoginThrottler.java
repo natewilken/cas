@@ -44,6 +44,10 @@ public class LoginThrottler {
 		return new UsernameAndIpAddressThrottleContext(request.getParameter(usernameParameter), request.getRemoteAddr());
 	}
 	
+	public boolean isEnabled() {
+		return failureThreshold > 0;
+	}
+	
 	public boolean isLockedOut(final ThrottleContext throttleContext) {
 		AttackProfile attackProfile = map.get(throttleContext);
 		if (logger.isTraceEnabled()) {

@@ -1,19 +1,17 @@
 <jsp:directive.include file="includes/top.jsp" />
 
 	<div id="logout">
-		<div class="content">
-			<div id="logout_pending">
-				<div class="headline"><img src="images/loader_trans.gif" /> <span>Do not close this window.</span></div>
-				<div class="subtext">You are being securely signed out.</div>
-			</div>
-			<div id="logout_complete">
-				<div class="headline"><img src="images/green_checkmark.png" /> <span>You have been signed out.</span></div>
-				<div class="subtext"><a href="https://my.asu.edu/">Sign In</a> <span>to My ASU</span></div>
-				<c:if test="${param['eventSource'] != 'google' and foundGoogleSession == true}">
-					<div class="headline"><img src="images/icon_attn.png" /> <span>You are still signed in to Google.</span></div>
-					<div class="subtext" title="This includes non-ASU Google accounts."><a href="https://www.google.com/accounts/Logout">Sign Out</a> of <em>all</em> Google services</span></div>
-				</c:if>
-			</div>
+		<div id="logout_pending" class="content">
+			<div class="headline loading">Do not close this window.</div>
+			<div class="subtext">You are being securely signed out.</div>
+		</div>
+		<div id="logout_complete" class="content">
+			<div class="headline success">You have been signed out.</div>
+			<div class="subtext"><a href="https://my.asu.edu/">Sign In</a> to My ASU</div>
+		<c:if test="${param['eventSource'] != 'google' and foundGoogleSession == true}">
+			<div class="headline warning">You are still signed in to Google.</div>
+			<div class="subtext" title="This includes non-ASU Google accounts."><a href="https://www.google.com/accounts/Logout">Sign Out</a> of <em>all</em> Google services</div>
+		</c:if>
 		</div>
 	</div>
 	
@@ -47,6 +45,7 @@
 						if (framesDone == watchCount) {
 							document.getElementById('logout_pending').style.display = 'none';
 							document.getElementById('logout_complete').style.display = 'block';
+							if (typeof window.scrollTo == 'function') window.scrollTo(0, 0);
 						}
 					};
 					if (fE.attachEvent) fE.attachEvent('onload', updateProgress);
@@ -66,6 +65,7 @@
 			if (watchCount == 0) {
 				document.getElementById('logout_pending').style.display = 'none';
 				document.getElementById('logout_complete').style.display = 'block';
+				if (typeof window.scrollTo == 'function') window.scrollTo(0, 0);
 			}
 		});
 	</script>

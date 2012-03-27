@@ -1,31 +1,25 @@
 <jsp:directive.include file="includes/top.jsp" />
 
 	<form:form method="post" id="login" commandName="${commandName}" htmlEscape="true">
-	    <form:errors path="*" cssClass="error" id="status" element="div" htmlEscape="false" />
 		<h2>Sign In</h2>
+	    <form:errors path="*" cssClass="error" id="status" element="div" htmlEscape="false" />
 		<fieldset class="content">
 			<div class="section">
-				<div class="label">
-					<label for="username">ASURITE User ID:</label>
-					<span><a href="https://selfsub.asu.edu/activation">Activate</a> | <a href="http://asu.edu/asuriterequest">Request ID</a></span>
-				</div>
+				<label for="username">ASURITE User ID:</label>
 				<input class="text" type="text" name="username" id="username" tabindex="1" autocorrect="off" autocapitalize="off" />
+				<div class="hint"><a href="https://selfsub.asu.edu/activation">Activate</a> or <a href="http://links.asu.edu/asuriteid-request">Request an ID</a></div>
 			</div>
-			<!--  this clear is for some older handhelds and ie6, that don't support overflow:hidden to reset floats -->
-			<div style="clear:both"></div>
 			<div class="section">
-				<div class="label">
-					<label for="password">Password:</label>
-					<span><a href="https://selfsub.asu.edu/lostpassword">Forgot ID &#047; Password?</a></span>
-				</div>
+				<label for="password">Password:</label>
 				<input class="text" type="password" name="password" id="password" tabindex="2" autocorrect="off" autocapitalize="off"  />
+				<div class="hint"><a href="https://selfsub.asu.edu/lostpassword">Forgot ID / Password?</a></div>
 			</div>
-			<!--  this clear is for some older handhelds and ie6, that don't support overflow:hidden to reset floats -->
-			<div style="clear:both"></div>
-						
-			<div id="submit_wrapper">
+			<div id="login_submit">
 				<input type="submit" class="submit" value="Sign In" tabindex="3" />
-				<label id="remember"><input type="checkbox" id="rememberid" tabindex="4" class="checkbox" /> Remember my User ID</label>
+				<label id="rememberid_label" for="rememberid">
+					<input class="checkbox" type="checkbox" name="rememberid" id="rememberid" tabindex="4" />
+					<span>Remember My User ID</span>
+				</label>
 			</div>
 			<input type="hidden" name="lt" value="${loginTicket}" />
 			<input type="hidden" name="execution" value="${flowExecutionKey}" />

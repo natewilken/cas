@@ -5,26 +5,37 @@ html {
 	padding: 0;
 }
 
-a:link, a:visited, a:hover, a:active {
+body {
+	background: transparent url(images/bg_shadow.png) center top no-repeat;
+	color: #333;
+	margin: 0;
+	padding: 0;
+}
+
+a {
 	color: #903;
 	text-decoration: none;
 }
-   
-a:hover, a:active {
-	color: #c60;
+
+a:hover {
+	text-decoration: underline;
+}
+
+#wrapper {
+	margin: 0 auto;
+	padding: 50px 0;
+	width: 542px;
 }
 
 #login_container {
-	background: #D4D4D4;
-	border: 1px solid #eee;
-	margin: 30px auto 0;
-	width: 542px;
+	background: #fff;
+	padding-bottom: 100px;
 }
-   
+
 #header {
-	background: #ffcb66 left bottom no-repeat;
+	background: #ffcb66;
 	height: 38px;
-	padding: 11px 0 11px 17px;
+	padding: 11px 17px;
 }
 
 #header h1 {
@@ -32,7 +43,7 @@ a:hover, a:active {
 }
 
 #header h1 a {
-	background: url(images/asu_logo.gif) no-repeat scroll 0 0;
+	background: url(images/asu_logo.gif) left top no-repeat;
 	display: block;
 	height: 38px;
 	overflow: hidden;
@@ -41,108 +52,157 @@ a:hover, a:active {
 }
 
 #ad {
-	/*border-left: 1px solid #D4D4D4;
-	border-right: 1px solid #D4D4D4;*/
-	/* save space for the ad so the page doesn't jump */
-	height: 90px;
+	height: 80px;
 	overflow: hidden;	
 }
    
 #login {
-	margin: 0 auto 12px auto;
-	padding: 0;
-	width: 360px;
+	margin: 10px;
 }
 
 #login h2, #logout h2 {
-	background: white url(images/boxtop_ccc.gif) repeat-x scroll bottom;
-	border: 1px solid #CCC;
-	border-bottom-width: 0;
-	border-top-width: 0;
-	color: #222;
-	font-size: 14px;
-	font-weight: bold;
+	font-size: 32px;
 	margin: 0;
-	padding: 6px 0;
 	text-align: center;
 }
 
-#login .content, #logout .content {
-	border: 1px solid #CCC;
-	background: #eee;
-	margin: 0;
-	padding: 15px 7px 10px;
+.error#status {
+	text-align: center;
+	margin: 0 auto;
+	width: 360px;
 }
 
-#login .label label {
-	font-size: 13px;
+.error#status .required {
+	display: none;
+}
+
+.error#status .required:first-child {
+	display: block;
+	background: transparent url(images/warning_48.png) left top no-repeat;
+	color: #dd3c10;
+	font-size: 16px;
 	font-weight: bold;
+	margin: 0 60px;
+	padding: 15px 15px 15px 45px;
+}
+
+.error#status br {
+	display: none;
+}
+
+.error#status .title {
+	background: transparent url(images/warning_48.png) left top no-repeat;
+	color: #dd3c10;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 15px 15px 15px 45px;
+}
+
+.error#status .subtext {
+	font-weight: bold;
+	margin: 5px 5px 0;
+}
+
+#login .content {
+	border: 0;
 	margin: 0;
+	padding: 10px;
 }
 
-#login span {
-	display: block;	
-	font-size: 11px;
+#login .content.generic_success {
+	background: transparent url(images/green_checkmark.png) 20px 20px no-repeat;
+	line-height: 200%;
+	padding: 20px 20px 50px 65px;
 }
 
-#login .label a {
-	color: #FF6801;
+#login .content.internal_error {
+	background: transparent url(images/warning_48.png) 20px 20px no-repeat;
+	line-height: 200%;
+	padding: 20px 20px 50px 75px;
 }
 
-#login .label a:hover {
-	color: #903;
+#login .content .headline {
+	font-size: 1.3em;
+	font-weight: bold;
 }
 
-#login .label {
+#login .content .subtext {
+	font-size: 1.3em;
+}
+
+#login .content .section {
+	margin: 8px 0;
+	overflow: hidden;
+}
+
+#login .content .section label {
+	display: block;
 	float: left;
-	margin-bottom: 5px;
-	padding-top: 3px;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 32px;
+	margin: 0;
 	text-align: right;
 	width: 125px;
 }
 
-#login .section {
-	overflow: hidden;
-}
-
-#login input.text {
+#login .content .section input.text {
 	background: #fff;
 	border: 1px solid #ccc;
 	color: #000;
-	height: 19px;
-	margin: 1px 3px 1px 7px;
-	padding: 2px 2px 0 2px;
-	width: 192px;
+	float: left;
+	font-size: 14px;
+	height: 30px;
+	margin: 0 8px;
+	padding: 0 5px;
+	width: 200px;
 }
 
-#login input.submit {
-	background: transparent url(images/login_bttn.gif) 0 0 no-repeat;
+#login .content .section .hint {
+	float: left;
+	line-height: 32px;
+	padding: 0;
+}
+
+#login_submit input.submit {
+	background: transparent url(images/signin_bttn.png) 0 0 no-repeat;
 	border: none;
-	clear: both;
 	color: #903;
 	cursor: pointer;
-	font: bold 12px/24px arial,sans-serif;
-	height: 24px;
-	margin-left: 134px;
-	padding-bottom: 2px;
-	width: 58px;
+	font-size: 14px;
+	font-weight: bold;
+	height: 34px;
+	line-height: 34px;
+	margin: 0 0 0 133px;
+	padding: 0 6px 1px;
+	width: 78px;
 }
 
-#login input.submit:hover {
+#login_submit input.submit:hover {
 	color: #fff;
-	background-position: 0 -25px;
+	background-position: 0 -35px;
+}
+
+input.checkbox#rememberid {
+	height: 12px;
+	margin: 0 0 0 10px;
+	padding: 0;
+}
+
+#rememberid_label {
+	font-size: 13px;
 }
 
 #lockout {
-	margin: 0 auto 12px auto;
+	margin: 20px auto;
 	padding: 0;
 	width: 500px;
 }
 
 #lockout .content {
+	background: transparent url(images/clock_48.png) 20px 20px no-repeat;
 	line-height: 200%;
-	padding: 20px 0;
-	text-align: center;
+	padding: 20px 0 50px 75px;
 }
 
 #lockout .headline {
@@ -158,141 +218,84 @@ a:hover, a:active {
 	margin-top: 20px;
 }
 
-#logout .headline, #logout .subtext {
-	font-weight: bold;
-	text-align: center;
-}
-
-#logout .headline {
-	color: #333;
-	font-size: 22px;
-	line-height: 35px;
-}
-
-#logout .headline img {
-	vertical-align: middle;
-}
-
 #logout {
-	margin: 0 auto 12px auto;
-	padding: 0;
-	width:96%
+	margin: 10px;
+	padding: 25px 0;
 }
 
-#logout_complete {
-	display: none;
+#logout .content {
+	padding: 10px;
+}
+
+#logout .content .headline {
+	color: #333;
+	font-size: 24px;
 	font-weight: bold;
-	padding-left: 15px;
-	text-align: left;
+	line-height: 35px;
+	padding: 5px 5px 5px 75px;
 }
 
-#logout_complete .headline span {
-	padding-left: 10px;
+#logout .content .headline.loading {
+	background: transparent url(images/loader.gif) 20px 2px no-repeat;
 }
 
-#logout_complete .headline {
-	font-size: 2em;
-	text-align: left;
+#logout .content .headline.success {
+	background: transparent url(images/green_checkmark.png) 25px 5px no-repeat;
 }
 
-#logout_complete .subtext {
-	font-size: 1.2em;
-	line-height: 25px;
-	padding-bottom: 10px;
-	padding-left: 50px;
-	text-align: left;
+#logout .content .headline.warning {
+	background: transparent url(images/warning_48.png) 18px 0 no-repeat;
 }
 
-#submit_wrapper {
-	clear: both;
+#logout .content .subtext {
+	font-weight: bold;
+	margin: 0 0 25px 75px;
 }
 
-#remember {
-	clear: both;
-	color: #666;
-	display: none; /* hide for now */
-	font-size: 10px;
-	margin-top: -3px;
-	padding-left: 5px;
-	vertical-align: middle;
+.content#logout_pending {
+	padding-bottom: 94px;
 }
 
-#remember input.checkbox {
-	vertical-align: middle;
+.content#logout_complete {
+	display: none;
 }
 
 #help {
+	color: #999;
+	margin: 15px 0;
 	text-align: center;
 }
 
-.error {
-	background:#ffebe8;
-	border:1px solid #dd3c10;
-	margin: 0 auto 15px;
-	padding: 10px 0;
-	text-align: center;
-}
-.error .title {
-	color: #dd3c10;
-	font-size: 13px;
+#help .teaser {
+	color: #666;
 	font-weight: bold;
-	padding-bottom: 3px;
 }
 
-.error .subtext {
-	font-weight: bold;
-	margin: 10px 0;
-}
-
-.error .reset {
-	padding: 0 50px;
-}
-
-.error a.reset-button {
-	background: transparent url(images/reset_bttn.gif) center 0 no-repeat;
-	color: #903;
-	cursor: pointer;
-	font-weight: bold;
-	line-height: 24px;
-	margin: 2px;
-	padding: 5px 6px;
-	text-decoration: none;
-	white-space: nowrap;
-}
-
-.error a.reset-button:hover {
-	background-position: 0 -25px;
-	color: #fff;
-}
-
-#login .internal_error {
-	line-height: 150%;
-	padding: 10px 10px 15px;
-	text-align: center;
+#help .advice {
 }
 
 #footer {
-	background: #000;
-	color: #ccc;
+	font-size: 11px;
+	list-style-type: none;
 	margin: 0;
 	padding: 4px 0;
 	text-align: center;
 }
 
-#footer a {
-	color: #ccc;
+#footer li {
+	border-right: 1px solid #999;
+	display: inline;
+	font-weight: bold;
 	padding: 0 5px;
 }
 
-#footer a:hover {
-	color: #fff;	
+#footer li:last-child {
+	border: 0;
 }
 
-#outages {
-	color: #444;
-	text-align: center;
+#footer li a {
+	color: #999;
 }
 
-.clear {
-	clear: both;
+#footer li a:hover {
 }

@@ -37,13 +37,50 @@ a {
 	width: 119px;
 }
 
+#ad {
+	display: none;
+}
+
 #login, #logout {
 	padding: 10px;
 }
 
 #login h2, #logout h2 {
-	font-size: 16px;
+	font-size: 24px;
 	margin: 0 0 10px 0;
+}
+
+.error#status {
+	background: #ffebe8;
+	border: 1px solid #dd3c10;
+	font-size: 14px;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+.error#status .required {
+	display: none;
+}
+
+.error#status .required:first-child {
+	color: #dd3c10;
+	font-weight: bold;
+	display: block;
+	padding-bottom: 3px;
+}
+
+.error#status br {
+	display: none;
+}
+
+.error#status .title {
+	color: #dd3c10;
+	font-weight: bold;
+	padding-bottom: 3px;
+}
+
+.error#status .subtext {
+	margin: 10px 0;
 }
 
 #login .content, #logout .content {
@@ -52,7 +89,29 @@ a {
 	padding: 0;
 }
 
-#login input.text {
+#login .content.generic_success {
+}
+
+#login .content.internal_error {
+}
+
+#login .content .headline {
+	font-weight: bold;
+}
+
+#login .content .subtext {
+	margin: 25px 0 40px;
+}
+
+#login .content .section {
+	margin-bottom: 5px;
+}
+
+#login .content .section .label {
+	margin: 5px 0;
+}
+
+#login .content .section input.text {
 	border: 1px solid #D9D9D9;
 	font-size: 18px;
 	padding: 5px 7px;
@@ -61,7 +120,15 @@ a {
     -webkit-border-radius: 0;
 }
 
-#login input.submit {
+#login .content .section .hint {
+	display: none;
+}
+
+#login_submit {
+	margin: 15px 0 0 0;
+}
+
+#login_submit input.submit {
 	background: black;
 	background: -moz-linear-gradient(100% 100% 90deg, #000, #333);
 	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#000));
@@ -72,141 +139,100 @@ a {
 	-webkit-border-radius: 0;
 }
 
-#login .label {
-	margin: 5px 0;
-}
-
-#login .label span {
-	display: none;
+input.checkbox#rememberid {
+	margin-left: 10px;
 }
 
 #lockout {
-	margin: 0 auto 12px auto;
-	padding: 0;
+	margin: 10px;
 }
 
 #lockout .content {
-	line-height: 150%;
 	padding: 20px 0;
-	text-align: center;
 }
 
 #lockout .headline {
-	font-size: 1.1em;
+	font-size: 18px;
 	font-weight: bold;
 }
 
 #lockout .subtext {
-	font-size: 1.1em;
+	margin: 25px 0 100px;
 }
 
 #lockout .more {
-	margin-top: 20px;
+	display: none;
 }
 
-#logout .headline, #logout .subtext {
+#logout {
+	height: 250px;
+}
+
+#logout .content {
+	padding-top: 55px;
+}
+
+#logout .content .headline, #logout .content .subtext {
 	font-weight: bold;
-	text-align: center;
 }
 
-#logout .headline {
+#logout .content .headline {
 	color: #333;
 	font-size: 22px;
 	line-height: 35px;
 }
 
-#logout .headline img {
-	vertical-align: middle;
+#logout .content .headline.loading {
+}
+
+#logout .content .headline.success {
+}
+
+#logout .content .headline.warning {
+	font-size: 18px;
 }
 
 #logout .subtext {
 	color: #777;
-	font-size: 20px;
-	line-height: 50px;
+	padding-bottom: 40px;
 }
 
-#logout_complete {
-	display: none;	
-}
-
-#submit_wrapper {
-	padding: 8px 0;
-}
-
-#remember {
+.content#logout_pending {
 	display: none;
-	padding-left: 8px;
 }
 
-#remember input[type=checkbox] {
-	vertical-align: baseline;
+.content#logout_pending .subtext {
+	background: transparent url(images/loader.gif) 0 center no-repeat;
+	padding: 0 50px;
+}
+
+.content#logout_complete {
 }
 
 #help {
-	border-bottom: 1px solid #d5d3d3;
-	font-size: .9em;
+	font-size: 14px;
 	line-height: 25px;
 	margin: 0;
-	padding: 0 10px 10px;
-}
-
-#help .helpdesk {
-	white-space: nowrap;	
-}
-
-.error {
-	background: #ffebe8;
-	border: 1px solid #dd3c10;
-	font-size: 14px;
-	text-align: center;
 	padding: 10px;
-	margin-bottom: 10px;
+	width: 260px;
 }
 
-.error .title {
+#help .teaser {
 	font-weight: bold;
-	color: #dd3c10;
-	padding-bottom: 3px;
-}
-
-.error .subtext {
-	margin: 10px 0;
-}
-
-.error .reset {
-}
-
-.error a.reset-button {
-	background: black;
-	background: -moz-linear-gradient(100% 100% 90deg, #000, #333);
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#000));
-	border: 1px solid black;
-	color: #fff;	
-	font-size: 16px;
-	line-height: 200%;
-	padding: 5px 12px;
-	text-decoration: none;
-	white-space: nowrap;
-	-webkit-border-radius: 0;
 }
 
 #footer {
-	border-top: 1px solid #f4efef;
-	color: #222;
-	font-size: 12px;
+	border-top: 1px solid #fff;
+	font-size: 14px;
+	list-style-type: none;
+	margin: 0;
 	padding: 10px;
 }
 
-#footer a {
+#footer li {
+	margin: 5px 0;
+}
+
+#footer li a {
 	color: #222;
-	margin: 0 2px;
-	padding: 0;
-}
-
-#footer a:first-child {
-	margin-left: 0;
-}
-
-#outages {
-	display: none;
 }

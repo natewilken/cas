@@ -6,10 +6,10 @@
 	<div id="login">
 		<h2>Authorization Failure</h2>
 		<div class="content internal_error">
-			<p>You are not authorized to use this application for the following reason:</p>
+			<div class="headline">You are not authorized to use this application for the following reason:</div>
 			<%final Exception e = (Exception) request.getSession().getAttribute(AbstractProcessingFilter.SPRING_SECURITY_LAST_EXCEPTION_KEY);
 		    request.setAttribute("e", e);%>
-			<p><c:out value="${e.message}" escapeXml="true" /></p>
+			<div class="subtext"><c:out value="${e.message}" escapeXml="true" /></div>
 		</div>
 	</div>
 	

@@ -17,33 +17,37 @@ public class LoginThrottlerAction {
 	protected LoginThrottler throttler;
 	
 	public String preSubmit(final RequestContext requestContext) throws Exception {
-		ThrottleContext throttleContext = throttler.getThrottleContext(requestContext);
-		if (throttler.isLockedOut(throttleContext)) {
-			logger.warn("Authentication attempt blocked for [" + throttleContext + "]");
-			return "lockout";
+		if (throttler.isEnabled()) {
+			ThrottleContext throttleContext = throttler.getThrottleContext(requestContext);
+			if (throttler.isLockedOut(throttleContext)) {
+				logger.warn("Authentication attempt blocked for [" + throttleContext + "]");
+				return "lockout";
+			}
 		}
-		
 		return "success";
 	}
 	
 	public String postSubmit(final RequestContext requestContext) throws Exception {
-		ThrottleContext throttleContext = throttler.getThrottleContext(requestContext);
-		
-		if (SUCCESSFUL_AUTHENTICATION_EVENT.equals(requestContext.getCurrentEvent().getId())) {
-			logger.trace("auth was successful for [" + throttleContext + "]; clearing failures");
-			throttler.clearFailures(throttleContext);
-			return "success";
+		if (throttler.isEnabled()) {
+			ThrottleContext throttleContext = throttler.getThrottleContext(requestContext);
 			
-		} else {
-			logger.trace("auth failed; registering failure for [" + throttleContext + "]");
-			throttler.registerFailure(throttleContext, requestContext);
-			
-			if (throttler.isLockedOut(throttleContext)) {
-				return "lockout";
+			if (SUCCESSFUL_AUTHENTICATION_EVENT.equals(requestContext.getCurrentEvent().getId())) {
+				logger.trace("auth was successful for [" + throttleContext + "]; clearing failures");
+				throttler.clearFailures(throttleContext);
+				return "success";
+				
 			} else {
-				return "error";
+				logger.trace("auth failed; registering failure for [" + throttleContext + "]");
+				throttler.registerFailure(throttleContext, requestContext);
+				
+				if (throttler.isLockedOut(throttleContext)) {
+					return "lockout";
+				} else {
+					return "error";
+				}
 			}
 		}
+		return requestContext.getCurrentEvent().getId();
 	}
 	
 	public void setLoginThrottler(final LoginThrottler throttler) {
