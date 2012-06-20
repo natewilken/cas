@@ -16,15 +16,15 @@ public class LoginThrottlerAction {
 	@NotNull
 	protected LoginThrottler throttler;
 	
-	public String preSubmit(final RequestContext requestContext) throws Exception {
+	public boolean isLockedOut(final RequestContext requestContext) throws Exception {
 		if (throttler.isEnabled()) {
 			ThrottleContext throttleContext = throttler.getThrottleContext(requestContext);
 			if (throttler.isLockedOut(throttleContext)) {
 				logger.warn("Authentication attempt blocked for [" + throttleContext + "]");
-				return "lockout";
+				return true;
 			}
 		}
-		return "success";
+		return false;
 	}
 	
 	public String postSubmit(final RequestContext requestContext) throws Exception {

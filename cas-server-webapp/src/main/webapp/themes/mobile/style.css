@@ -143,6 +143,62 @@ input.checkbox#rememberid {
 	margin-left: 10px;
 }
 
+#password_warning {
+	margin: 10px;
+}
+
+#password_warning .content {
+	font-size: 18px;
+	line-height: 150%;
+	padding: 20px 0;
+}
+
+#password_warning .headline {
+	font-weight: bold;
+}
+
+#password_warning .subtext {
+	margin: 0 0 25px;
+}
+
+#password_warning #button_container {
+	margin: 0 0 80px;
+	overflow: auto;
+}
+
+#password_warning form#chpwd {
+	float: left;
+	overflow: auto;
+}
+
+#password_warning form#chpwd input.submit {
+	background: black;
+	background: -moz-linear-gradient(100% 100% 90deg, #000, #333);
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#000));
+	border: 1px solid black;
+	color: #fff;	
+	font-size: 16px;
+	padding: 5px 12px;
+	-webkit-border-radius: 0;
+}
+
+#password_warning form#skip {
+	float: left;
+	margin: 0 10px;
+	overflow: auto;
+}
+
+#password_warning form#skip input.submit {
+	background: black;
+	background: -moz-linear-gradient(100% 100% 90deg, #000, #333);
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#000));
+	border: 1px solid black;
+	color: #fff;	
+	font-size: 16px;
+	padding: 5px 12px;
+	-webkit-border-radius: 0;
+}
+
 #lockout {
 	margin: 10px;
 }

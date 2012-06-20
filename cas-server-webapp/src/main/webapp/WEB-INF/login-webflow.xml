@@ -55,29 +55,50 @@
         <on-entry>
             <set name="viewScope.commandName" value="'credentials'" />
         </on-entry>
-		<transition on="submit" bind="true" validate="true" to="preSubmit">
+		<transition on="submit" bind="true" validate="true" to="lockoutCheck">
             <evaluate expression="authenticationViaFormAction.doBind(flowRequestContext, flowScope.credentials)" />
         </transition>
 	</view-state>
 
-	<action-state id="preSubmit">
-		<evaluate expression="loginThrottlerAction.preSubmit(flowRequestContext)" />
-		<transition on="lockout" to="viewAccountLockoutView" />
-		<transition on="success" to="realSubmit" />
-	</action-state>
+	<decision-state id="lockoutCheck">
+		<if test="loginThrottlerAction.isLockedOut(flowRequestContext)" then="viewAccountLockoutView" else="realSubmit" />
+	</decision-state>
 	
 	<action-state id="realSubmit">
         <evaluate expression="authenticationViaFormAction.submit(flowRequestContext, flowScope.credentials, messageContext)" />
 		<transition on="warn" to="warn" />
-		<transition on="success" to="postSubmit" />
-		<transition on="error" to="postSubmit" />
+		<transition on="success" to="throttlerCallback" />
+		<transition on="error" to="throttlerCallback" />
 	</action-state>
 	
-	<action-state id="postSubmit">
+	<action-state id="throttlerCallback">
 		<evaluate expression="loginThrottlerAction.postSubmit(flowRequestContext)" />
-		<transition on="success" to="sendTicketGrantingTicket" />
+		<transition on="success" to="accountStatusCheck" />
 		<transition on="error" to="generateLoginTicket" />
 		<transition on="lockout" to="viewAccountLockoutView" />
+	</action-state>
+	
+	<action-state id="accountStatusCheck">
+		<evaluate expression="accountStatusCheckAction" />
+		<transition on="success" to="sendTicketGrantingTicket" />
+		<transition on="error" to="generateLoginTicket" />
+		<transition on="warn" to="viewPasswordWarning" />
+		<transition on="expired" to="forcedPasswordChangeRedirect" />
+	</action-state>
+	
+	<view-state id="viewPasswordWarning" view="casPasswordWarningView" >
+		<transition on="chpwd" to="unforcedPasswordChangeRedirect" />
+		<transition on="skip" to="sendTicketGrantingTicket" /> 
+	</view-state>
+	
+	<action-state id="unforcedPasswordChangeRedirect">
+		<evaluate expression="accountStatusCheckAction.getPasswordChangeRedirectURL(flowRequestContext, false)" result="requestScope.passwordChangeURL" />
+		<transition to="passwordChangeRedirectView" />
+	</action-state>
+	
+	<action-state id="forcedPasswordChangeRedirect">
+		<evaluate expression="accountStatusCheckAction.getPasswordChangeRedirectURL(flowRequestContext, true)" result="requestScope.passwordChangeURL" />
+		<transition to="passwordChangeRedirectView" />
 	</action-state>
 	
 	<action-state id="sendTicketGrantingTicket">
@@ -140,9 +161,8 @@
     <end-state id="viewServiceSsoErrorView" view="viewServiceSsoErrorView" />
 
 	<end-state id="viewAccountLockoutView" view="casAccountLockoutView" />
-	<end-state id="viewAccountDisabledView" view="casAccountDisabledView" />
-	<end-state id="viewPasswordExpiredView" view="casPasswordExpiredView" />
-	<end-state id="viewPasswordWarningView" view="casPasswordWarningView" />
+	
+	<end-state id="passwordChangeRedirectView" view="externalRedirect:${requestScope.passwordChangeURL}" />
 	
 	<global-transitions>
 		<transition to="viewServiceErrorView" on-exception="org.springframework.webflow.execution.repository.NoSuchFlowExecutionException" />

@@ -224,6 +224,12 @@
 	<bean id="loginThrottlerAction" class="edu.asu.cas.web.flow.throttle.LoginThrottlerAction"
 		p:loginThrottler-ref="loginThrottler" />
 	
+	<bean id="accountStatusCheckAction" class="edu.asu.cas.web.flow.status.AccountStatusCheckAction"
+		p:accountStatusRegistry-ref="accountStatusRegistry"
+		p:casLoginURL="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}"
+		p:passwordChangeBaseURL="${cas.accountStatus.passwordChangeBaseURL}"
+		p:passwordChangeReferralSecret="${cas.accountStatus.passwordChangeReferralSecret}" />
+	
 	<bean id="authenticationViaFormAction" class="org.jasig.cas.web.flow.AuthenticationViaFormAction"
 		p:centralAuthenticationService-ref="centralAuthenticationService"
 		p:warnCookieGenerator-ref="warnCookieGenerator" />

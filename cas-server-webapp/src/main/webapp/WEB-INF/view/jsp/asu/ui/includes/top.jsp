@@ -10,7 +10,7 @@
 	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-	<link rel="stylesheet" media="all" type="text/css" href="themes/<spring:theme code="name" />/style.css?Hq3sg9UT" />
+	<link rel="stylesheet" media="all" type="text/css" href="themes/<spring:theme code="name" />/style.css?gEm_i8ni" />
 	
 	<script type="text/javascript">
 	  var _gaq = _gaq || [];

@@ -193,6 +193,72 @@ input.checkbox#rememberid {
 	font-size: 13px;
 }
 
+#password_warning {
+	margin: 20px auto;
+	padding: 0;
+	width: 500px;
+}
+
+#password_warning .content {
+	line-height: 210%;
+	padding: 20px 0 50px 75px;
+}
+
+#password_warning .headline {
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+#password_warning .subtext {
+	font-size: 1.4em;
+}
+
+#password_warning #button_container {
+	margin: 16px 0;
+	overflow: auto;
+}
+
+#password_warning form#chpwd {
+	float: left;
+	overflow: auto;
+}
+
+#password_warning form#chpwd input.submit {
+	background: transparent url(images/update_bttn.png) 0 0 no-repeat;
+	border: none;
+	color: #903;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: bold;
+	height: 34px;
+	line-height: 34px;
+	margin: 0;
+	padding: 0 6px 1px;
+	width: 115px;
+}
+
+#password_warning form#chpwd input.submit:hover {
+	color: #fff;
+	background-position: 0 -35px;
+}
+
+#password_warning form#skip {
+	float: left;
+	overflow: auto;
+}
+
+#password_warning form#skip input.submit {
+	background: none;
+	border: none;
+	color: #903;
+	font-size: 13px;
+	margin: 9px;
+}
+
+#password_warning form#skip input.submit:hover {
+	text-decoration: underline;
+}
+
 #lockout {
 	margin: 20px auto;
 	padding: 0;
