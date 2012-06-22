@@ -9,7 +9,7 @@
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 	
 	<bean id="persistenceUnitManager" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager"
-		p:persistenceXmlLocation="classpath:/edu/asu/cas/web/support/edna/persistence.xml" />
+		p:persistenceXmlLocation="classpath:/edu/asu/cas/persondir/edna/persistence.xml" />
 		
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceUnitManager" ref="persistenceUnitManager" />
@@ -21,11 +21,4 @@
 		</property>
 	</bean>
 	
-	<bean id="accountStatusRegistry" class="edu.asu.cas.web.support.edna.EDNAAccountStatusRegistry"
-		p:workerCount="${cas.accountStatus.workerCount}"
-		p:workerTimeoutMillis="${cas.accountStatus.workerTimeoutMillis}"
-		p:alertSender="${cas.accountStatus.alertSender}"
-		p:alertSubject="${cas.accountStatus.alertSubject}"
-		p:alertRecipients="${cas.accountStatus.alertRecipients}" />
-
 </beans>

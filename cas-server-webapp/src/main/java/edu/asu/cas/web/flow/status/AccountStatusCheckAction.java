@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.validation.constraints.NotNull;
 
+import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 import org.jasig.cas.authentication.principal.WebApplicationService;
 import org.jasig.cas.web.support.WebUtils;
@@ -15,16 +16,13 @@ import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
 
 import edu.asu.cas.web.support.AccountStatus;
-import edu.asu.cas.web.support.AccountStatusException;
-import edu.asu.cas.web.support.AccountStatusRegistry;
 import edu.asu.cas.web.support.PasswordState;
+import edu.asu.cas.web.support.PasswordStateException;
+import edu.asu.cas.web.support.edna.EDNAAccountStatus;
 import edu.asu.cas.web.util.PasswordChangeReferral;
 
 public class AccountStatusCheckAction extends AbstractAction {
 
-	@NotNull
-	protected AccountStatusRegistry accountStatusRegistry;
-	
 	@NotNull
 	protected String casLoginURL;
 	
@@ -38,14 +36,11 @@ public class AccountStatusCheckAction extends AbstractAction {
 	protected Event doExecute(final RequestContext context) throws Exception {
 		logger.debug("checking account status");
 		
-		UsernamePasswordCredentials credentials = (UsernamePasswordCredentials)context.getFlowScope().get("credentials");
-		String username = credentials.getUsername();
-		logger.trace("username: " + username);
-		
+		Principal principal = (Principal)context.getFlowScope().get("principal");
 		String serviceTicketId = context.getRequestScope().getString("serviceTicketId");
 		logger.trace("serviceTicketId: " + serviceTicketId);
 		
-		if (username == null) {
+		if (principal == null) {
 			if (serviceTicketId == null) {
 				logger.warn("principal and service ticket unavailable");
 				return error();
@@ -56,7 +51,7 @@ public class AccountStatusCheckAction extends AbstractAction {
 		}
 		
 		try {
-			AccountStatus status = accountStatusRegistry.getAccountStatus(username);
+			AccountStatus status = EDNAAccountStatus.getAccountStatus(principal.getAttributes());
 			PasswordState pwState = status.getPasswordState();
 			
 			if (pwState == PasswordState.OK) {
@@ -79,7 +74,7 @@ public class AccountStatusCheckAction extends AbstractAction {
 				}
 			}
 			
-		} catch (AccountStatusException e) {
+		} catch (PasswordStateException e) {
 			logger.error("account status lookup failed", e);
 			return success(); // don't punish the user
 		}
@@ -109,13 +104,9 @@ public class AccountStatusCheckAction extends AbstractAction {
 				principal, forced, relayURL, System.currentTimeMillis(), passwordChangeReferralSecret);
 		
 		return passwordChangeBaseURL + (passwordChangeBaseURL.contains("?") ? "&" : "?")
-		+ referral.getReferralQueryString();
+				+ referral.getReferralQueryString();
 	}
 
-	public void setAccountStatusRegistry(final AccountStatusRegistry accountStatusRegistry) {
-		this.accountStatusRegistry = accountStatusRegistry;
-	}
-	
 	public void setCasLoginURL(String casLoginURL) {
 		this.casLoginURL = casLoginURL;
 	}

@@ -151,9 +151,9 @@
 		<dependency>
 			<groupId>asu.edu</groupId>
 			<artifactId>cas-riak</artifactId>
-			<version>0.1</version>
+			<version>0.2</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/cas-riak-0.1.jar</systemPath>
+			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/cas-riak-0.2.jar</systemPath>
 		</dependency>
 
 		<dependency>

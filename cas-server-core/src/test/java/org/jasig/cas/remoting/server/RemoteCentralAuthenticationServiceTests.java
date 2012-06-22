@@ -64,7 +64,7 @@ public class RemoteCentralAuthenticationServiceTests extends AbstractCentralAuth
         throws TicketException {
         final String ticketId = this.remoteCentralAuthenticationService
             .createTicketGrantingTicket(TestUtils
-                .getCredentialsWithSameUsernameAndPassword());
+                .getCredentialsWithSameUsernameAndPassword()).getId();
         this.remoteCentralAuthenticationService.grantServiceTicket(ticketId,
             TestUtils.getService());
     }
@@ -74,7 +74,7 @@ public class RemoteCentralAuthenticationServiceTests extends AbstractCentralAuth
         throws TicketException {
         final String ticketGrantingTicketId = this.remoteCentralAuthenticationService
             .createTicketGrantingTicket(TestUtils
-                .getCredentialsWithSameUsernameAndPassword());
+                .getCredentialsWithSameUsernameAndPassword()).getId();
         this.remoteCentralAuthenticationService.grantServiceTicket(
             ticketGrantingTicketId, TestUtils.getService(), TestUtils
                 .getCredentialsWithSameUsernameAndPassword());
@@ -85,7 +85,7 @@ public class RemoteCentralAuthenticationServiceTests extends AbstractCentralAuth
         throws TicketException {
         final String ticketGrantingTicketId = this.remoteCentralAuthenticationService
             .createTicketGrantingTicket(TestUtils
-                .getCredentialsWithSameUsernameAndPassword());
+                .getCredentialsWithSameUsernameAndPassword()).getId();
         this.remoteCentralAuthenticationService.grantServiceTicket(
             ticketGrantingTicketId, TestUtils.getService(), null);
     }
@@ -95,7 +95,7 @@ public class RemoteCentralAuthenticationServiceTests extends AbstractCentralAuth
         throws TicketException {
         final String ticketGrantingTicketId = this.remoteCentralAuthenticationService
             .createTicketGrantingTicket(TestUtils
-                .getCredentialsWithSameUsernameAndPassword());
+                .getCredentialsWithSameUsernameAndPassword()).getId();
         try {
             this.remoteCentralAuthenticationService.grantServiceTicket(
                 ticketGrantingTicketId, TestUtils.getService(), TestUtils
@@ -111,7 +111,7 @@ public class RemoteCentralAuthenticationServiceTests extends AbstractCentralAuth
         throws TicketException {
         final String ticketGrantingTicket = this.remoteCentralAuthenticationService
             .createTicketGrantingTicket(TestUtils
-                .getCredentialsWithSameUsernameAndPassword());
+                .getCredentialsWithSameUsernameAndPassword()).getId();
         final String serviceTicket = this.remoteCentralAuthenticationService
             .grantServiceTicket(ticketGrantingTicket, TestUtils.getService());
 
@@ -124,7 +124,7 @@ public class RemoteCentralAuthenticationServiceTests extends AbstractCentralAuth
         throws TicketException {
         final String ticketGrantingTicket = this.remoteCentralAuthenticationService
             .createTicketGrantingTicket(TestUtils
-                .getCredentialsWithSameUsernameAndPassword());
+                .getCredentialsWithSameUsernameAndPassword()).getId();
         final String serviceTicket = this.remoteCentralAuthenticationService
             .grantServiceTicket(ticketGrantingTicket, TestUtils.getService());
         this.remoteCentralAuthenticationService.delegateTicketGrantingTicket(
@@ -136,7 +136,7 @@ public class RemoteCentralAuthenticationServiceTests extends AbstractCentralAuth
         throws TicketException {
         final String ticketGrantingTicket = this.remoteCentralAuthenticationService
             .createTicketGrantingTicket(TestUtils
-                .getCredentialsWithSameUsernameAndPassword());
+                .getCredentialsWithSameUsernameAndPassword()).getId();
         final String serviceTicket = this.remoteCentralAuthenticationService
             .grantServiceTicket(ticketGrantingTicket, TestUtils.getService());
         try {

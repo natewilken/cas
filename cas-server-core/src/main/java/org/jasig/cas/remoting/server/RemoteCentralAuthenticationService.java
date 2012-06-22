@@ -10,6 +10,7 @@ import org.jasig.cas.authentication.principal.Credentials;
 import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.ticket.TicketException;
+import org.jasig.cas.ticket.TicketGrantingTicket;
 import org.jasig.cas.validation.Assertion;
 import org.springframework.util.Assert;
 
@@ -49,7 +50,7 @@ public final class RemoteCentralAuthenticationService implements CentralAuthenti
      * @throws IllegalArgumentException if the Credentials are null or if given
      * invalid credentials.
      */
-    public String createTicketGrantingTicket(final Credentials credentials) throws TicketException {
+    public TicketGrantingTicket createTicketGrantingTicket(final Credentials credentials) throws TicketException {
         Assert.notNull(credentials, "credentials cannot be null");
         checkForErrors(credentials);
 

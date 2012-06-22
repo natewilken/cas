@@ -81,7 +81,7 @@ public abstract class AbstractNonInteractiveCredentialsAction extends
             WebUtils.putTicketGrantingTicketInRequestScope(
                 context,
                 this.centralAuthenticationService
-                    .createTicketGrantingTicket(credentials));
+                    .createTicketGrantingTicket(credentials).getId());
             onSuccess(context, credentials);
             return success();
         } catch (final TicketException e) {

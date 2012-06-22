@@ -138,7 +138,7 @@ public class AuthenticationViaFormActionTests extends
     public void testRenewWithServiceAndSameCredentials() throws Exception {
         final String ticketGrantingTicket = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockRequestContext context = new MockRequestContext();
 
@@ -159,7 +159,7 @@ public class AuthenticationViaFormActionTests extends
     public void testRenewWithServiceAndDifferentCredentials() throws Exception {
         final String ticketGrantingTicket = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockRequestContext context = new MockRequestContext();
 
@@ -180,7 +180,7 @@ public class AuthenticationViaFormActionTests extends
     public void testRenewWithServiceAndBadCredentials() throws Exception {
         final String ticketGrantingTicket = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         final MockHttpServletRequest request = new MockHttpServletRequest();
         final MockRequestContext context = new MockRequestContext();
 

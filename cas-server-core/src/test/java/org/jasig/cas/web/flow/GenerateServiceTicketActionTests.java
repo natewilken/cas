@@ -37,7 +37,7 @@ public final class GenerateServiceTicketActionTests extends AbstractCentralAuthe
             .setCentralAuthenticationService(getCentralAuthenticationService());
         this.action.afterPropertiesSet();
 
-        this.ticketGrantingTicket = getCentralAuthenticationService().createTicketGrantingTicket(TestUtils.getCredentialsWithSameUsernameAndPassword());
+        this.ticketGrantingTicket = getCentralAuthenticationService().createTicketGrantingTicket(TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
     }
 
     @Test

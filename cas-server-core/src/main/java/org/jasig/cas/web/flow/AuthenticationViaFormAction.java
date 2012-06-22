@@ -14,6 +14,7 @@ import org.jasig.cas.authentication.handler.AuthenticationException;
 import org.jasig.cas.authentication.principal.Credentials;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.ticket.TicketException;
+import org.jasig.cas.ticket.TicketGrantingTicket;
 import org.jasig.cas.web.bind.CredentialsBinder;
 import org.jasig.cas.web.support.WebUtils;
 import org.slf4j.Logger;
@@ -92,7 +93,9 @@ public class AuthenticationViaFormAction {
         }
 
         try {
-            WebUtils.putTicketGrantingTicketInRequestScope(context, this.centralAuthenticationService.createTicketGrantingTicket(credentials));
+        	TicketGrantingTicket tgt = this.centralAuthenticationService.createTicketGrantingTicket(credentials);
+        	context.getFlowScope().put("principal", tgt.getAuthentication().getPrincipal());
+            WebUtils.putTicketGrantingTicketInRequestScope(context, tgt.getId());
             putWarnCookieIfRequestParameterPresent(context);
             return "success";
         } catch (final TicketException e) {

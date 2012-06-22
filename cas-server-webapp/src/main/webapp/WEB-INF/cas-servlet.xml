@@ -225,7 +225,6 @@
 		p:loginThrottler-ref="loginThrottler" />
 	
 	<bean id="accountStatusCheckAction" class="edu.asu.cas.web.flow.status.AccountStatusCheckAction"
-		p:accountStatusRegistry-ref="accountStatusRegistry"
 		p:casLoginURL="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}"
 		p:passwordChangeBaseURL="${cas.accountStatus.passwordChangeBaseURL}"
 		p:passwordChangeReferralSecret="${cas.accountStatus.passwordChangeReferralSecret}" />
@@ -241,6 +240,8 @@
 		p:centralAuthenticationService-ref="centralAuthenticationService"
 		p:ticketGrantingTicketCookieGenerator-ref="ticketGrantingTicketCookieGenerator" />
 
+	<bean id="sendSSONameCookieAction" class="edu.asu.cas.web.flow.SendSSONameCookieAction" />
+	
     <bean id="gatewayServicesManagementCheck" class="org.jasig.cas.web.flow.GatewayServicesManagementCheck">
         <constructor-arg index="0" ref="servicesManager" />
     </bean>

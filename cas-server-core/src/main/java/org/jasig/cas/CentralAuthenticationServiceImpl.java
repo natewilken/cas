@@ -409,7 +409,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
         resourceResolverName="CREATE_TICKET_GRANTING_TICKET_RESOURCE_RESOLVER")
     @Profiled(tag = "CREATE_TICKET_GRANTING_TICKET", logFailuresSeparately = false)
     @Transactional(readOnly = false)
-    public String createTicketGrantingTicket(final Credentials credentials) throws TicketCreationException {
+    public TicketGrantingTicket createTicketGrantingTicket(final Credentials credentials) throws TicketCreationException {
         Assert.notNull(credentials, "credentials cannot be null");
 
         try {
@@ -422,7 +422,7 @@ public final class CentralAuthenticationServiceImpl implements CentralAuthentica
                 authentication, this.ticketGrantingTicketExpirationPolicy);
 
             this.ticketRegistry.addTicket(ticketGrantingTicket);
-            return ticketGrantingTicket.getId();
+            return ticketGrantingTicket;
         } catch (final AuthenticationException e) {
             throw new TicketCreationException(e);
         }

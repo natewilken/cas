@@ -11,6 +11,7 @@ import org.jasig.cas.authentication.principal.Credentials;
 import org.jasig.cas.authentication.principal.LogoutResponse;
 import org.jasig.cas.authentication.principal.Service;
 import org.jasig.cas.ticket.TicketException;
+import org.jasig.cas.ticket.TicketGrantingTicket;
 import org.jasig.cas.validation.Assertion;
 
 /**
@@ -41,10 +42,10 @@ public interface CentralAuthenticationService {
      * caller.
      * 
      * @param credentials The credentials to create the ticket for
-     * @return The String identifier of the ticket (may not be null).
+     * @return The ticket (may not be null).
      * @throws TicketException if ticket cannot be created
      */
-    String createTicketGrantingTicket(Credentials credentials)
+	TicketGrantingTicket createTicketGrantingTicket(Credentials credentials)
         throws TicketException;
 
     /**

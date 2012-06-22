@@ -54,7 +54,8 @@
 					| Credentials you are using.
 					+-->
 				<bean
-					class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver" />
+					class="org.jasig.cas.authentication.principal.UsernamePasswordCredentialsToPrincipalResolver"
+					p:attributeRepository-ref="attributeRepository" />
 				<!--
 					| HttpBasedServiceCredentialsToPrincipalResolver supports HttpBasedCredentials.  It supports the CAS 2.0 approach of
 					| authenticating services by SSL callback, extracting the callback URL from the Credentials and representing it as a
@@ -108,7 +109,6 @@
 	<!-- 
 	Bean that defines the attributes that a service may return.  This example uses the Stub/Mock version.  A real implementation
 	may go against a database or LDAP server.  The id should remain "attributeRepository" though.
-	 -->
 	<bean id="attributeRepository"
 		class="org.jasig.services.persondir.support.StubPersonAttributeDao">
 		<property name="backingMap">
@@ -117,6 +117,28 @@
 				<entry key="eduPersonAffiliation" value="eduPersonAffiliation" /> 
 				<entry key="groupMembership" value="groupMembership" />
 			</map>
+		</property>
+	</bean>
+	 -->
+
+	<bean id="attributeRepository" class="edu.asu.cas.persondir.edna.EDNAPersonAttributeRepository">
+		<property name="workerCount" value="${cas.persondir.edna.workerCount}" />
+		<property name="workerTimeoutMillis" value="${cas.persondir.edna.workerTimeoutMillis}" />
+		<property name="alertSender" value="${cas.persondir.edna.alertSender}" />
+		<property name="alertSubject" value="${cas.persondir.edna.alertSubject}" />
+		<property name="alertRecipients" value="${cas.persondir.edna.alertRecipients}" />
+		<property name="userAttributeNames">
+			<set>
+				<value>emplId</value>
+				<value>pwState</value>
+				<value>pwExpirationDate</value>
+				<value>pwLastChangeDate</value>
+				<value>principalType</value>
+				<value>principalTypeSDesc</value>
+				<value>firstName</value>
+				<value>middleName</value>
+				<value>lastName</value>
+			</set>
 		</property>
 	</bean>
 	

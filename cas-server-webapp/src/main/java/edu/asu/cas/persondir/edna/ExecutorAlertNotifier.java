@@ -1,4 +1,4 @@
-package edu.asu.cas.web.support.edna;
+package edu.asu.cas.persondir.edna;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

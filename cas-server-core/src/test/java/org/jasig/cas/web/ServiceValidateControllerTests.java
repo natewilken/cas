@@ -54,7 +54,7 @@ public class ServiceValidateControllerTests extends AbstractCentralAuthenticatio
     private HttpServletRequest getHttpServletRequest() throws TicketException {
         final String tId = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         getCentralAuthenticationService().grantServiceTicket(tId,
             TestUtils.getService());
         final String sId2 = getCentralAuthenticationService()
@@ -89,7 +89,7 @@ public class ServiceValidateControllerTests extends AbstractCentralAuthenticatio
     public void testValidServiceTicket() throws Exception {
         final String tId = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         final String sId = getCentralAuthenticationService()
             .grantServiceTicket(tId, TestUtils.getService());
 
@@ -133,7 +133,7 @@ public class ServiceValidateControllerTests extends AbstractCentralAuthenticatio
     public void testInvalidServiceTicket() throws Exception {
         final String tId = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         final String sId = getCentralAuthenticationService()
             .grantServiceTicket(tId, TestUtils.getService());
 
@@ -154,7 +154,7 @@ public class ServiceValidateControllerTests extends AbstractCentralAuthenticatio
         this.serviceValidateController.setProxyHandler(new Cas10ProxyHandler());
         final String tId = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         final String sId = getCentralAuthenticationService()
             .grantServiceTicket(tId, TestUtils.getService());
 
@@ -175,7 +175,7 @@ public class ServiceValidateControllerTests extends AbstractCentralAuthenticatio
         this.serviceValidateController.setProxyHandler(new Cas10ProxyHandler());
         final String tId = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         final String sId = getCentralAuthenticationService()
             .grantServiceTicket(tId, TestUtils.getService());
 
@@ -197,7 +197,7 @@ public class ServiceValidateControllerTests extends AbstractCentralAuthenticatio
         this.serviceValidateController.setProxyHandler(new Cas10ProxyHandler());
         final String tId = getCentralAuthenticationService()
             .createTicketGrantingTicket(
-                TestUtils.getCredentialsWithSameUsernameAndPassword());
+                TestUtils.getCredentialsWithSameUsernameAndPassword()).getId();
         final String sId = getCentralAuthenticationService()
             .grantServiceTicket(tId, TestUtils.getService());
 
