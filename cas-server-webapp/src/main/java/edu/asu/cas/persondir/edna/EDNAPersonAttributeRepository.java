@@ -173,20 +173,20 @@ public class EDNAPersonAttributeRepository extends AbstractDefaultAttributePerso
 			Date pwLastChangeDate = (Date)result[3];
 			Number principalType = (result[4] != null) ? (Number)result[4] : 0;
 			String principalTypeSDesc = (String)result[5];
-			String firstName = (String)result[6];
+			String givenName = (String)result[6];
 			String middleName = (String)result[7];
-			String lastName = (String)result[8];
+			String sn = (String)result[8];
 
 			Map<String,List<Object>> mapOfLists = new HashMap<String,List<Object>>();
 			mapOfLists.put("emplId", new ArrayList<Object>(Collections.singleton(emplId)));
-			mapOfLists.put("pwState", new ArrayList<Object>(Collections.singleton(pwState)));
-			mapOfLists.put("pwExpirationDate", new ArrayList<Object>(Collections.singleton(pwExpirationDate)));
-			mapOfLists.put("pwLastChangeDate", new ArrayList<Object>(Collections.singleton(pwLastChangeDate)));
+			mapOfLists.put("passwordStateFlag", new ArrayList<Object>(Collections.singleton(pwState)));
+			mapOfLists.put("passwordExpirationDate", new ArrayList<Object>(Collections.singleton(pwExpirationDate)));
+			mapOfLists.put("passwordLastChangeDate", new ArrayList<Object>(Collections.singleton(pwLastChangeDate)));
 			mapOfLists.put("principalType", new ArrayList<Object>(Collections.singleton(principalType)));
 			mapOfLists.put("principalTypeSDesc", new ArrayList<Object>(Collections.singleton(principalTypeSDesc)));
-			mapOfLists.put("firstName", new ArrayList<Object>(Collections.singleton(firstName)));
+			mapOfLists.put("givenName", new ArrayList<Object>(Collections.singleton(givenName)));
 			mapOfLists.put("middleName", new ArrayList<Object>(Collections.singleton(middleName)));
-			mapOfLists.put("lastName", new ArrayList<Object>(Collections.singleton(lastName)));
+			mapOfLists.put("sn", new ArrayList<Object>(Collections.singleton(sn)));
 
 			return new CaseInsensitiveNamedPersonImpl(username, mapOfLists);
 		}

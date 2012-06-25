@@ -28,7 +28,8 @@ public class SendSSONameCookieAction extends AbstractAction {
 				logger.trace("Principal found: " + principal.getId());
 				Map<String,Object> attributes = principal.getAttributes();
 				if (attributes != null) {
-					ssoName = (String)attributes.get("firstName");
+					ssoName = (String)attributes.get("givenName");
+					if (ssoName == null) logger.warn("no givenName found for principal " + principal.getId());
 				}
 			}
 			

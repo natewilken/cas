@@ -201,7 +201,7 @@ input.checkbox#rememberid {
 
 #password_warning .content {
 	line-height: 210%;
-	padding: 20px 0 50px 75px;
+	padding: 20px 0 10px 75px;
 }
 
 #password_warning .headline {
@@ -211,6 +211,14 @@ input.checkbox#rememberid {
 
 #password_warning .subtext {
 	font-size: 1.4em;
+}
+
+#password_warning .more {
+	color: #ccc;
+	font-size: 0.95em;
+	line-height: 150%;
+	margin: 10px 0;
+	width: 330px;
 }
 
 #password_warning #button_container {

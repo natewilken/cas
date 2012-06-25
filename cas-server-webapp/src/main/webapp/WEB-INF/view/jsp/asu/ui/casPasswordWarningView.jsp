@@ -6,6 +6,21 @@
 		<div class="content">
 			<div class="headline"><spring:message code="screen.passwordwarning.headline" /></div>
 			<div class="subtext"><spring:message code="screen.passwordwarning.subtext" arguments="${passwordDaysRemaining}" /></div>
+			<div class="more">
+				<c:set var="pwExpireDate"><fmt:formatDate type="date" value="${passwordExpirationDate}" dateStyle="long"/></c:set>
+				<c:set var="pwExpireTime"><fmt:formatDate type="time" value="${passwordExpirationDate}" timeStyle="short"/></c:set>
+				<c:choose>
+				<c:when test="${not empty passwordLastChangeDate}">
+					<c:set var="pwChangeDate"><fmt:formatDate type="date" value="${passwordLastChangeDate}" dateStyle="long"/></c:set>
+					<spring:message code="screen.passwordwarning.more" argumentSeparator=";"
+										arguments="${passwordDaysRemaining};${pwChangeDate};${pwExpireDate};${pwExpireTime}" />
+				</c:when>
+				<c:otherwise>
+					<spring:message code="screen.passwordwarning.more.nullchange" argumentSeparator=";"
+										arguments="${passwordDaysRemaining};${pwExpireDate};${pwExpireTime}" />
+				</c:otherwise>
+				</c:choose>
+			</div>
 
 			<div id="button_container">
 				<form:form id="chpwd" method="post">

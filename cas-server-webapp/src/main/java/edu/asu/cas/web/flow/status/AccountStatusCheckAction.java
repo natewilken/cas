@@ -63,6 +63,9 @@ public class AccountStatusCheckAction extends AbstractAction {
 				if (pwState == PasswordState.WARN) {
 					logger.trace("password state: " + pwState + ", expiration: " + status.getPasswordExpirationDate());
 					context.getRequestScope().put("passwordDaysRemaining", new Integer(status.getPasswordDaysRemaining()));
+					context.getRequestScope().put("passwordExpirationDate", status.getPasswordExpirationDate());
+					context.getRequestScope().put("passwordLastChangeDate", status.getLastPasswordChangeDate());
+					
 					context.getFlowScope().put("ticketGrantingTicketId", WebUtils.getTicketGrantingTicketId(context));
 					
 					return result("warn");

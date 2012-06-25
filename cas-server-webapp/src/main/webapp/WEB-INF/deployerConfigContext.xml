@@ -130,14 +130,11 @@
 		<property name="userAttributeNames">
 			<set>
 				<value>emplId</value>
-				<value>pwState</value>
-				<value>pwExpirationDate</value>
-				<value>pwLastChangeDate</value>
 				<value>principalType</value>
 				<value>principalTypeSDesc</value>
-				<value>firstName</value>
+				<value>givenName</value>
 				<value>middleName</value>
-				<value>lastName</value>
+				<value>sn</value>
 			</set>
 		</property>
 	</bean>

@@ -49,14 +49,14 @@ public class EDNAAccountStatus implements AccountStatus {
 			throw new PasswordStateException("password state attributes are missing");
 		}
 		
-		int pwState = (attributes.get("pwState") != null) ? ((Number)attributes.get("pwState")).intValue() : 0;
-		Date pwExpirationDate = (Date)attributes.get("pwExpirationDate");
-		Date pwLastChangeDate = (Date)attributes.get("pwLastChangeDate");
+		int pwStateFlag = (attributes.get("passwordStateFlag") != null) ? ((Number)attributes.get("passwordStateFlag")).intValue() : 0;
+		Date pwExpirationDate = (Date)attributes.get("passwordExpirationDate");
+		Date pwLastChangeDate = (Date)attributes.get("passwordLastChangeDate");
 		
-		if (pwState == 2) {
+		if (pwStateFlag == 2) {
 			return new EDNAAccountStatus(PasswordState.ADMIN_FORCED_CHANGE, pwExpirationDate, pwLastChangeDate);
 			
-		} else if (pwState == 1) {
+		} else if (pwStateFlag == 1) {
 			
 			Date now = new Date();
 			

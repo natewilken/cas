@@ -161,6 +161,10 @@ input.checkbox#rememberid {
 	margin: 0 0 25px;
 }
 
+#password_warning .more {
+	display: none;
+}
+
 #password_warning #button_container {
 	margin: 0 0 80px;
 	overflow: auto;
