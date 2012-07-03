@@ -90,7 +90,7 @@ public class AccountStatusCheckAction extends AbstractAction {
 		String username = credentials.getUsername();
 		
 		WebApplicationService service = WebUtils.getService(context);
-		String serviceURL = service.getResponse(null).getUrl(); // sanitized
+		String serviceURL = (service != null) ? service.getResponse(null).getUrl() : null; // sanitized
 		
 		String url = getRedirectURL(username, forced, serviceURL);
 		logger.trace("redirect url: " + url);
@@ -101,10 +101,12 @@ public class AccountStatusCheckAction extends AbstractAction {
 	protected String getRedirectURL(String principal, boolean forced, String serviceURL)
 	throws InvalidKeyException, NoSuchAlgorithmException, UnsupportedEncodingException {
 		
-		String relayURL = casLoginURL + (casLoginURL.contains("?") ? "&" : "?") + "service=" + URLEncoder.encode(serviceURL, "UTF-8");
+		StringBuilder relayURL = new StringBuilder(casLoginURL);
+		if (serviceURL != null)
+			relayURL.append((casLoginURL.contains("?") ? "&" : "?") + "service=" + URLEncoder.encode(serviceURL, "UTF-8"));
 		
 		PasswordChangeReferral referral = new PasswordChangeReferral(
-				principal, forced, relayURL, System.currentTimeMillis(), passwordChangeReferralSecret);
+				principal, forced, relayURL.toString(), System.currentTimeMillis(), passwordChangeReferralSecret);
 		
 		return passwordChangeBaseURL + (passwordChangeBaseURL.contains("?") ? "&" : "?")
 				+ referral.getReferralQueryString();
