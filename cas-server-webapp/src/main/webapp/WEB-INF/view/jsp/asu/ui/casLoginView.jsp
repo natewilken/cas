@@ -7,7 +7,7 @@
 			<div class="section">
 				<label for="username">ASURITE User ID:</label>
 				<input class="text" type="text" name="username" id="username" tabindex="1" autocorrect="off" autocapitalize="off" />
-				<div class="hint"><a href="https://selfsub.asu.edu/activation">Activate</a> or <a href="http://links.asu.edu/asuriteid-request">Request an ID</a></div>
+				<div class="hint"><a href="https://selfsub.asu.edu/activation">Activate</a> or <a href="http://www.asu.edu/asuriterequest">Request an ID</a></div>
 			</div>
 			<div class="section">
 				<label for="password">Password:</label>
