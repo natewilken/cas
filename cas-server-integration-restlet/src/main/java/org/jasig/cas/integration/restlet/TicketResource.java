@@ -62,7 +62,7 @@ public class TicketResource extends Resource {
      
         final Credentials c = obtainCredentials();
         try {
-            final String ticketGrantingTicketId = this.centralAuthenticationService.createTicketGrantingTicket(c);
+            final String ticketGrantingTicketId = this.centralAuthenticationService.createTicketGrantingTicket(c).getId();
             getResponse().setStatus(determineStatus());
             final Reference ticket_ref = getRequest().getResourceRef().addSegment(ticketGrantingTicketId);
             getResponse().setLocationRef(ticket_ref);
