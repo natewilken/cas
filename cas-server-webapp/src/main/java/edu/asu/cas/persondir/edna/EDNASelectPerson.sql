@@ -6,5 +6,6 @@ and p.inactiveCode = 'A'
 and p.principalType = pt.principalType
 and pt.inactiveCode = 'A'
 and p.electronicIdentityKey = ei.electronicIdentityKey
+and ei.affiliateElectronicIdentityType = 1
 and ei.inactiveCode = 'A'
 and ei.affiliateId = a.affiliateId
