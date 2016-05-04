@@ -17,9 +17,13 @@
 	
 <jsp:directive.include file="includes/bottom.jsp" />
     
-	<iframe src="https://hrsa.oasis.asu.edu/psp/asusaprd/?cmd=logout&logoutBounce=" height="0" width="0" frameborder="0"></iframe>
-	<iframe src="https://crm.oasis.asu.edu/psp/asucmprd/?cmd=logout&logoutBounce=" height="0" width="0" frameborder="0"></iframe>
-	<iframe src="https://webapp3.asu.edu/myapps/Login/Logout" height="0" width="0" frameborder="0"></iframe>
+        <iframe src="https://hr.oasis.asu.edu/psp/asuhrprd/?cmd=logout&logoutBounce=" height="0" width="0" frameborder="0"></iframe>
+        <iframe src="https://cs.oasis.asu.edu/psp/asucsprd/?cmd=logout&logoutBounce=" height="0" width="0" frameborder="0"></iframe>
+<!--
+        <iframe src="https://hrsa.oasis.asu.edu/psp/asusaprd/?cmd=logout&logoutBounce=" height="0" width="0" frameborder="0"></iframe>
+        <iframe src="https://crm.oasis.asu.edu/psp/asucmprd/?cmd=logout&logoutBounce=" height="0" width="0" frameborder="0"></iframe>
+        <iframe src="https://webapp3.asu.edu/myapps/Login/Logout" height="0" width="0" frameborder="0"></iframe>
+-->
 	
 	<c:if test="${not empty logoutResponseKeys}">
 		<c:forEach var="logoutResponseKey" items="${logoutResponseKeys}">
