@@ -21,6 +21,7 @@ import org.jasig.cas.web.support.CookieRetrievingCookieGenerator;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.CookieGenerator;
 
 /**
  * Controller to delete ticket granting ticket cookie in order to log out of
@@ -46,6 +47,10 @@ public final class LogoutController extends AbstractController {
     @NotNull
     private CookieRetrievingCookieGenerator warnCookieGenerator;
 
+    /** CookieGenerator for SSONAME Cookie */
+    @NotNull
+    private CookieGenerator ssoNameCookieGenerator;
+    
     /** Logout view name. */
     @NotNull
     private String logoutView;
@@ -92,6 +97,7 @@ public final class LogoutController extends AbstractController {
             
             this.ticketGrantingTicketCookieGenerator.removeCookie(response);
             this.warnCookieGenerator.removeCookie(response);
+            this.ssoNameCookieGenerator.removeCookie(response);
         }
 
         Map<String,Object> model = new HashMap<String,Object>();
@@ -114,6 +120,10 @@ public final class LogoutController extends AbstractController {
         this.warnCookieGenerator = warnCookieGenerator;
     }
 
+    public void setSSONameCookieGenerator(final CookieGenerator ssoNameCookieGenerator) {
+    	this.ssoNameCookieGenerator = ssoNameCookieGenerator;
+    }
+    
     /**
      * @param centralAuthenticationService The centralAuthenticationService to
      * set.

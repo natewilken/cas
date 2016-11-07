@@ -8,5 +8,5 @@ public interface AccountStatus {
 	public Date getPasswordExpirationDate();
 	public Date getLastPasswordChangeDate();
 	public int getPasswordDaysRemaining();
-	
+	public PasswordResetFactorState getPasswordResetFactorState();
 }

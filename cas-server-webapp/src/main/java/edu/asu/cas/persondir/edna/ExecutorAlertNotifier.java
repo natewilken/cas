@@ -32,7 +32,7 @@ public class ExecutorAlertNotifier extends TimerTask {
 	
 	protected static final Logger logger = Logger.getLogger(ExecutorAlertNotifier.class);
 	
-	protected final BlockingQueue<String> messageQueue = new LinkedBlockingQueue<String>();
+	protected final BlockingQueue<AlertMessage> messageQueue = new LinkedBlockingQueue<AlertMessage>();
 	protected final ThreadPoolExecutor monitoredExecutor;
 	protected final Properties mailProps;
 	protected final InternetAddress alertSender;
@@ -54,45 +54,26 @@ public class ExecutorAlertNotifier extends TimerTask {
 	}
 	
 	public void handleRejectedExecution(String principal, RejectedExecutionException e) {
-		StringWriter writer = new StringWriter();
-		PrintWriter out = new PrintWriter(writer);
-		
-		out.println("rejected execution for [" + principal + "]; active thread count: "
-				+ monitoredExecutor.getActiveCount() + "/" + monitoredExecutor.getMaximumPoolSize()
-				+ ", completed task count: " + monitoredExecutor.getCompletedTaskCount());
-		
-		e.printStackTrace(out);
-		out.flush();
-		
-		queueMessage(writer.toString());
+		queueMessage("rejected execution for [" + principal + "]", e);
 	}
 	
 	public void handleTimeout(String principal, TimeoutException e) {
-		queueMessage("execution timeout for [" + principal + "]; active thread count: "
-				+ monitoredExecutor.getActiveCount() + "/" + monitoredExecutor.getMaximumPoolSize()
-				+ ", completed task count: " + monitoredExecutor.getCompletedTaskCount() + "\n");
+		queueMessage("execution timeout for [" + principal + "]", null);
 	}
 	
 	public void handleMissingPrincipal(String principal, NoResultException e) {
-		queueMessage("no account status result found for [" + principal + "]\n");
+		queueMessage("no account status result found for [" + principal + "]", null);
 	}
 	
 	public void handleUnknownError(String principal, Throwable t) {
-		StringWriter writer = new StringWriter();
-		PrintWriter out = new PrintWriter(writer);
-		
-		out.println("unknown error for [" + principal + "]; active thread count: "
-				+ monitoredExecutor.getActiveCount() + "/" + monitoredExecutor.getMaximumPoolSize()
-				+ ", completed task count: " + monitoredExecutor.getCompletedTaskCount());
-		
-		t.printStackTrace(out);
-		out.flush();
-		
-		queueMessage(writer.toString());
+		queueMessage("unknown error for [" + principal + "]", t);
 	}
 	
-	protected void queueMessage(String message) {
-		messageQueue.offer(new Date() + " " + message);
+	protected void queueMessage(String alert, Throwable error) {
+		String message = "[active/max/completed: " + monitoredExecutor.getActiveCount() + "/" + monitoredExecutor.getMaximumPoolSize()
+				+ "/" + monitoredExecutor.getCompletedTaskCount() + "] " + alert;
+		
+		messageQueue.offer(new AlertMessage(new Date(), message, error));
 	}
 	
 	protected void dispatchMessage(String content) throws UnsupportedEncodingException, MessagingException {
@@ -113,30 +94,56 @@ public class ExecutorAlertNotifier extends TimerTask {
 	public void run() {
 		try {
 			if ((monitoredExecutor.getActiveCount() / monitoredExecutor.getMaximumPoolSize()) > 0.95) {
-				queueMessage("thread pool high watermark! active thread count: "
-					+ monitoredExecutor.getActiveCount() + "/" + monitoredExecutor.getMaximumPoolSize()
-					+ ", completed task count: " + monitoredExecutor.getCompletedTaskCount());
+				queueMessage("thread pool high watermark!", null);
 			}
 			
 			if (!messageQueue.isEmpty()) {
-				StringWriter writer = new StringWriter();
-				PrintWriter out = new PrintWriter(writer);
+				StringWriter summary = new StringWriter();
+				PrintWriter summaryWriter = new PrintWriter(summary);
 				
-				MessageFormat messageFormat = new MessageFormat("There {0}:");
+				StringWriter body = new StringWriter();
+				PrintWriter bodyWriter = new PrintWriter(body);
+				
+				MessageFormat messageFormat = new MessageFormat("There {0}.");
 				messageFormat.setFormatByArgumentIndex(0, new ChoiceFormat("1#is {1} alert|1.0<are {1} alerts"));
 				
 				Integer queueSize = new Integer(messageQueue.size());
 				
-				out.println(messageFormat.format(new Object[]{queueSize, queueSize}));
-				out.println();
+				summaryWriter.println(messageFormat.format(new Object[]{queueSize, queueSize}));
+				summaryWriter.println();
+				summaryWriter.println();
 				
-				String message = null;
-				while ((message = messageQueue.poll()) != null) {
-					out.println(message);
+				summaryWriter.println("Alert Summary");
+				summaryWriter.println("________________________________________");
+				summaryWriter.println();
+				
+				bodyWriter.println("Stack Traces");
+				bodyWriter.println("________________________________________");
+				bodyWriter.println();
+				
+				int stackTraceCount = 0;
+				
+				AlertMessage alert = null;
+				while ((alert = messageQueue.poll()) != null) {
+					summaryWriter.print(alert.getDate() + " " + alert.getMessage());
+					if (alert.getError() != null) summaryWriter.print("; " + alert.getError().toString());
+					summaryWriter.println();
+					
+					if (alert.getError() != null) {
+						stackTraceCount++;
+						bodyWriter.println(alert.getDate() + " " + alert.getMessage());
+						alert.getError().printStackTrace(bodyWriter);
+						bodyWriter.println();
+					}
 				}
-				out.flush();
 				
-				dispatchMessage(writer.toString());
+				summaryWriter.println();
+				summaryWriter.println();
+				summaryWriter.flush();
+				
+				bodyWriter.flush();
+				
+				dispatchMessage(summary.toString() + (stackTraceCount > 0 ? body.toString() : ""));
 			}
 			
 		} catch (Throwable t) {
@@ -177,4 +184,57 @@ public class ExecutorAlertNotifier extends TimerTask {
 		}
 	}
 	
+	private static final class AlertMessage {
+		private Date date;
+		private String message;
+		private Throwable error;
+		
+		public AlertMessage(final Date date, final String message, final Throwable error) {
+			this.date = date;
+			this.message = message;
+			this.error = error;
+		}
+		
+		public Date getDate() {
+			return date;
+		}
+		
+		public String getMessage() {
+			return message;
+		}
+		
+		public Throwable getError() {
+			return error;
+		}
+	}
+	
+	/*
+	private static class HTMLDataSource implements DataSource {
+		private final String htmlString;
+		
+		public HTMLDataSource(String htmlString) {
+			this.htmlString = htmlString;
+		}
+		
+		@Override
+		public String getContentType() {
+			return "text/html";
+		}
+
+		@Override
+		public InputStream getInputStream() throws IOException {
+			return new ByteArrayInputStream(htmlString.getBytes());
+		}
+
+		@Override
+		public String getName() {
+			return "text/html DataSource for sending email";
+		}
+
+		@Override
+		public OutputStream getOutputStream() throws IOException {
+			throw new IOException("cannot write html");
+		}
+	}
+	*/
 }

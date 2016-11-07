@@ -2,14 +2,11 @@ package edu.asu.cas.web.flow;
 
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
 import org.jasig.cas.authentication.principal.Principal;
 import org.jasig.cas.authentication.principal.UsernamePasswordCredentials;
 import org.jasig.cas.web.support.WebUtils;
+import org.springframework.web.util.CookieGenerator;
 import org.springframework.webflow.action.AbstractAction;
 import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
@@ -17,6 +14,8 @@ import org.springframework.webflow.execution.RequestContext;
 public class SendSSONameCookieAction extends AbstractAction {
 
 	private static Logger logger = Logger.getLogger(SendSSONameCookieAction.class);
+	
+	protected CookieGenerator ssoNameCookieGenerator;
 	
 	@Override
 	protected Event doExecute(RequestContext context) throws Exception {
@@ -42,7 +41,7 @@ public class SendSSONameCookieAction extends AbstractAction {
 		}
 		
 		if (ssoName != null) {
-			addCookie(WebUtils.getHttpServletRequest(context), WebUtils.getHttpServletResponse(context), ssoName);
+			ssoNameCookieGenerator.addCookie(WebUtils.getHttpServletResponse(context), ssoName);
 		}
 		
 		return success();
@@ -55,28 +54,8 @@ public class SendSSONameCookieAction extends AbstractAction {
 		return null;
 	}
 	
-	protected void addCookie(HttpServletRequest request, HttpServletResponse response, String ssoName) {
-		try {
-			Cookie cookie = new Cookie("SSONAME", ssoName);
-			cookie.setMaxAge(-1);
-			cookie.setDomain(".asu.edu");
-			cookie.setPath("/");
-			
-			response.addCookie(cookie);
-			if (logger.isTraceEnabled()) logger.trace("set-cookie: " + formatCookieString(cookie));
-			
-		} catch (Throwable t) {
-			logger.warn("unable to add SSONAME cookie", t);
-		}
-	}
+    public void setSSONameCookieGenerator(final CookieGenerator ssoNameCookieGenerator) {
+    	this.ssoNameCookieGenerator = ssoNameCookieGenerator;
+    }
 	
-	protected static String formatCookieString(Cookie cookie) {
-		StringBuilder buffer = new StringBuilder(cookie.getName() + "=" + cookie.getValue());
-		if (cookie.getDomain() != null) buffer.append("; Domain=" + cookie.getDomain());
-		buffer.append("; Path=" + cookie.getPath());
-		if (cookie.getSecure()) buffer.append("; Secure");
-		
-		return buffer.toString();
-	}
-
 }

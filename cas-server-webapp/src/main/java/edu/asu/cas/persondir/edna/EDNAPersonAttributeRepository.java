@@ -1,6 +1,9 @@
 package edu.asu.cas.persondir.edna;
 
 import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -19,10 +22,10 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.mail.internet.InternetAddress;
-import javax.persistence.EntityManager;
+import javax.naming.InitialContext;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.NonUniqueResultException;
+import javax.sql.DataSource;
 
 import org.jasig.services.persondir.IPersonAttributes;
 import org.jasig.services.persondir.support.AbstractDefaultAttributePersonAttributeDao;
@@ -38,8 +41,10 @@ public class EDNAPersonAttributeRepository extends AbstractDefaultAttributePerso
 	
 	private static Logger logger = LoggerFactory.getLogger(EDNAPersonAttributeRepository.class);
 
-    @PersistenceContext(unitName="edna")
-	protected EntityManager entityManager;
+    //@PersistenceContext(unitName="edna")
+	//protected EntityManager entityManager;
+	
+	protected DataSource ednaDataSource;
 	
     protected Set<String> userAttributeNames = null;
 	protected String alertSender;
@@ -76,6 +81,8 @@ public class EDNAPersonAttributeRepository extends AbstractDefaultAttributePerso
 	}
 	
 	public void afterPropertiesSet() throws Exception {
+		ednaDataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/edna-ds");
+		
 		executor = new ThreadPoolExecutor(workerCount, workerCount, 0, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(true), new ThreadFactory() {
 			private AtomicInteger threadNumber = new AtomicInteger(1);
 			
@@ -122,7 +129,7 @@ public class EDNAPersonAttributeRepository extends AbstractDefaultAttributePerso
 	@Override
 	public IPersonAttributes getPerson(String username) {
 		try {
-			Future<IPersonAttributes> result = executor.submit(new Worker(entityManager, username));
+			Future<IPersonAttributes> result = executor.submit(new Worker(ednaDataSource, username));
 			return result.get(workerTimeoutMillis, TimeUnit.MILLISECONDS);
 			
 		} catch (RejectedExecutionException e) {
@@ -154,41 +161,90 @@ public class EDNAPersonAttributeRepository extends AbstractDefaultAttributePerso
 	}
 
 	private static final class Worker implements Callable<IPersonAttributes> {
-		EntityManager entityManager;
+		DataSource dataSource;
 		String username;
 		
-		Worker(final EntityManager entityManager, final String username) {
-			this.entityManager = entityManager;
+		Worker(final DataSource dataSource, final String username) {
+			this.dataSource = dataSource;
 			this.username = username;
 		}
 
 		public IPersonAttributes call() throws Exception {
-			Query query = entityManager.createNativeQuery(EDNAPersonSQL.SELECT_PERSON.toString());
-			query.setParameter("username", username);
+			Connection connection = null;
+			PreparedStatement statement = null;
+			ResultSet resultSet = null;
 			
-			Object[] result = (Object[])query.getSingleResult();
-			String emplId = (String)result[0];
-			Number pwState = (result[1] != null) ? (Number)result[1] : 0;
-			Date pwExpirationDate = (Date)result[2];
-			Date pwLastChangeDate = (Date)result[3];
-			Number principalType = (result[4] != null) ? (Number)result[4] : 0;
-			String principalTypeSDesc = (String)result[5];
-			String givenName = (String)result[6];
-			String middleName = (String)result[7];
-			String sn = (String)result[8];
-
-			Map<String,List<Object>> mapOfLists = new HashMap<String,List<Object>>();
-			mapOfLists.put("emplId", new ArrayList<Object>(Collections.singleton(emplId)));
-			mapOfLists.put("passwordStateFlag", new ArrayList<Object>(Collections.singleton(pwState)));
-			mapOfLists.put("passwordExpirationDate", new ArrayList<Object>(Collections.singleton(pwExpirationDate)));
-			mapOfLists.put("passwordLastChangeDate", new ArrayList<Object>(Collections.singleton(pwLastChangeDate)));
-			mapOfLists.put("principalType", new ArrayList<Object>(Collections.singleton(principalType)));
-			mapOfLists.put("principalTypeSDesc", new ArrayList<Object>(Collections.singleton(principalTypeSDesc)));
-			mapOfLists.put("givenName", new ArrayList<Object>(Collections.singleton(givenName)));
-			mapOfLists.put("middleName", new ArrayList<Object>(Collections.singleton(middleName)));
-			mapOfLists.put("sn", new ArrayList<Object>(Collections.singleton(sn)));
-
-			return new CaseInsensitiveNamedPersonImpl(username, mapOfLists);
+			Map<String,List<Object>> attributeMap = null;
+			
+			try {
+				connection = dataSource.getConnection();
+				statement = connection.prepareStatement(EDNAPersonSQL.SELECT_PERSON.toString());
+				statement.setString(1, username);
+				
+				resultSet = statement.executeQuery();
+				
+				if (resultSet.next()) {
+					
+					attributeMap = new HashMap<String,List<Object>>();
+					String emplId = resultSet.getString(1);
+					Number pwState = resultSet.getInt(2); // 0 if null
+					Date pwExpirationDate = resultSet.getTimestamp(3);
+					Date pwLastChangeDate = resultSet.getTimestamp(4);
+					Number principalType = resultSet.getInt(5); // 0 if null
+					String principalTypeSDesc = resultSet.getString(6);
+					String givenName = resultSet.getString(7);
+					String middleName = resultSet.getString(8);
+					String sn = resultSet.getString(9);
+					String principal = resultSet.getString(10);
+					String principalScoped = resultSet.getString(11);
+					Number loginDiversionState = (resultSet.getObject(12) != null) ? resultSet.getInt(12) : null;
+					
+					attributeMap.put("emplId", new ArrayList<Object>(Collections.singleton(emplId)));
+					attributeMap.put("passwordStateFlag", new ArrayList<Object>(Collections.singleton(pwState)));
+					attributeMap.put("passwordExpirationDate", new ArrayList<Object>(Collections.singleton(pwExpirationDate)));
+					attributeMap.put("passwordLastChangeDate", new ArrayList<Object>(Collections.singleton(pwLastChangeDate)));
+					attributeMap.put("principalType", new ArrayList<Object>(Collections.singleton(principalType)));
+					attributeMap.put("principalTypeSDesc", new ArrayList<Object>(Collections.singleton(principalTypeSDesc)));
+					attributeMap.put("givenName", new ArrayList<Object>(Collections.singleton(givenName)));
+					attributeMap.put("middleName", new ArrayList<Object>(Collections.singleton(middleName)));
+					attributeMap.put("sn", new ArrayList<Object>(Collections.singleton(sn)));
+					attributeMap.put("principal", new ArrayList<Object>(Collections.singleton(principal)));
+					attributeMap.put("principalScoped", new ArrayList<Object>(Collections.singleton(principalScoped)));
+					attributeMap.put("loginDiversionState", new ArrayList<Object>(Collections.singleton(loginDiversionState)));
+					
+				} else {
+					throw new NoResultException();
+				}
+				
+				if (resultSet.next()) {
+					throw new NonUniqueResultException();
+				}
+				
+				return new CaseInsensitiveNamedPersonImpl(username, attributeMap);
+				
+			} finally {
+				if (resultSet != null) {
+					try {
+						resultSet.close();
+					} catch (Throwable t) {
+						// intentionally blank
+					}
+				}
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (Throwable t) {
+						// intentionally blank
+					}
+				}
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (Throwable t) {
+						// intentionally blank
+					}
+				}
+			}
 		}
 	}
 

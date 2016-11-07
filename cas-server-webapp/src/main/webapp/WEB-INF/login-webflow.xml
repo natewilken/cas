@@ -73,13 +73,13 @@
 	
 	<action-state id="throttlerCallback">
 		<evaluate expression="loginThrottlerAction.postSubmit(flowRequestContext)" />
-		<transition on="success" to="accountStatusCheck" />
+		<transition on="success" to="passwordStateCheck" />
 		<transition on="error" to="generateLoginTicket" />
 		<transition on="lockout" to="viewAccountLockoutView" />
 	</action-state>
 	
-	<action-state id="accountStatusCheck">
-		<evaluate expression="accountStatusCheckAction" />
+	<action-state id="passwordStateCheck">
+		<evaluate expression="passwordStateCheckAction" />
 		<transition on="success" to="sendTicketGrantingTicket" />
 		<transition on="error" to="generateLoginTicket" />
 		<transition on="warn" to="viewPasswordWarning" />
@@ -92,12 +92,12 @@
 	</view-state>
 	
 	<action-state id="unforcedPasswordChangeRedirect">
-		<evaluate expression="accountStatusCheckAction.getPasswordChangeRedirectURL(flowRequestContext, false)" result="requestScope.passwordChangeURL" />
+		<evaluate expression="passwordStateCheckAction.getPasswordChangeRedirectURL(flowRequestContext, false)" result="requestScope.passwordChangeURL" />
 		<transition to="passwordChangeRedirectView" />
 	</action-state>
 	
 	<action-state id="forcedPasswordChangeRedirect">
-		<evaluate expression="accountStatusCheckAction.getPasswordChangeRedirectURL(flowRequestContext, true)" result="requestScope.passwordChangeURL" />
+		<evaluate expression="passwordStateCheckAction.getPasswordChangeRedirectURL(flowRequestContext, true)" result="requestScope.passwordChangeURL" />
 		<transition to="passwordChangeRedirectView" />
 	</action-state>
 	
@@ -108,7 +108,18 @@
 
 	<action-state id="sendSSONameCookie">
 		<evaluate expression="sendSSONameCookieAction" />
-		<transition to="serviceCheck" />
+		<transition to="passwordResetFactorStateCheck" />
+	</action-state>
+	
+	<action-state id="passwordResetFactorStateCheck">
+		<evaluate expression="passwordResetFactorStateCheckAction" />
+		<transition on="success" to="serviceCheck" />
+		<transition on="divert" to="passwordResetFactorEnrollmentRedirect" />
+	</action-state>
+	
+	<action-state id="passwordResetFactorEnrollmentRedirect">
+		<evaluate expression="passwordResetFactorStateCheckAction.getPasswordResetFactorEnrollmentRedirectURL(flowRequestContext)" result="requestScope.passwordResetFactorEnrollmentURL" />
+		<transition to="passwordResetFactorEnrollmentRedirectView" />
 	</action-state>
 	
 	<decision-state id="serviceCheck">
@@ -168,6 +179,8 @@
 	<end-state id="viewAccountLockoutView" view="casAccountLockoutView" />
 	
 	<end-state id="passwordChangeRedirectView" view="externalRedirect:${requestScope.passwordChangeURL}" />
+	
+	<end-state id="passwordResetFactorEnrollmentRedirectView" view="externalRedirect:${requestScope.passwordResetFactorEnrollmentURL}" />
 	
 	<global-transitions>
 		<transition to="viewServiceErrorView" on-exception="org.springframework.webflow.execution.repository.NoSuchFlowExecutionException" />

@@ -211,7 +211,8 @@
 		p:centralAuthenticationService-ref="centralAuthenticationService"
 		p:logoutView="casLogoutView"
 		p:warnCookieGenerator-ref="warnCookieGenerator"
-		p:ticketGrantingTicketCookieGenerator-ref="ticketGrantingTicketCookieGenerator" />
+		p:ticketGrantingTicketCookieGenerator-ref="ticketGrantingTicketCookieGenerator"
+		p:sSONameCookieGenerator-ref="ssoNameCookieGenerator" />
 	
 	<bean id="logoutCallbackController" class="org.jasig.cas.web.LogoutCallbackController"
 		p:logoutCallbackView="casLogoutCallbackView" />
@@ -224,10 +225,14 @@
 	<bean id="loginThrottlerAction" class="edu.asu.cas.web.flow.throttle.LoginThrottlerAction"
 		p:loginThrottler-ref="loginThrottler" />
 	
-	<bean id="accountStatusCheckAction" class="edu.asu.cas.web.flow.status.AccountStatusCheckAction"
+	<bean id="passwordStateCheckAction" class="edu.asu.cas.web.flow.status.PasswordStateCheckAction"
 		p:casLoginURL="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}"
 		p:passwordChangeBaseURL="${cas.accountStatus.passwordChangeBaseURL}"
 		p:passwordChangeReferralSecret="${cas.accountStatus.passwordChangeReferralSecret}" />
+	
+	<bean id="passwordResetFactorStateCheckAction" class="edu.asu.cas.web.flow.status.PasswordResetFactorStateCheckAction"
+		p:casLoginURL="${cas.securityContext.casProcessingFilterEntryPoint.loginUrl}"
+		p:passwordResetFactorEnrollmentBaseURL="${cas.accountStatus.passwordResetFactorEnrollmentBaseURL}" />
 	
 	<bean id="authenticationViaFormAction" class="org.jasig.cas.web.flow.AuthenticationViaFormAction"
 		p:centralAuthenticationService-ref="centralAuthenticationService"
@@ -240,7 +245,8 @@
 		p:centralAuthenticationService-ref="centralAuthenticationService"
 		p:ticketGrantingTicketCookieGenerator-ref="ticketGrantingTicketCookieGenerator" />
 
-	<bean id="sendSSONameCookieAction" class="edu.asu.cas.web.flow.SendSSONameCookieAction" />
+	<bean id="sendSSONameCookieAction" class="edu.asu.cas.web.flow.SendSSONameCookieAction"
+		p:sSONameCookieGenerator-ref="ssoNameCookieGenerator" />
 	
     <bean id="gatewayServicesManagementCheck" class="org.jasig.cas.web.flow.GatewayServicesManagementCheck">
         <constructor-arg index="0" ref="servicesManager" />

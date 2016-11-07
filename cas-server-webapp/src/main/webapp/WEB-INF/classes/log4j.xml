@@ -20,7 +20,7 @@
 			<param name="FileNamePattern" value="cas.log.%d.gz"/>
 		</rollingPolicy>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d %p [%c] - %m%n"/>
+            <param name="ConversionPattern" value="%d %p [%c] - &lt;%m&gt;%n"/>
         </layout>
     </appender>
 
@@ -88,15 +88,11 @@
         password in the log file.  If you are sharing your log files, it is recommend you selectively
         apply DEBUG level logging on a an org.springframework.* package level (i.e. org.springframework.dao)
     -->
-    <logger name="org.springframework">
+    <logger name="org.springframework" additivity="false">
         <level value="WARN" />
     </logger>
 
-    <logger name="org.springframework.webflow">
-        <level value="WARN" />
-    </logger>
-
-    <logger name="org.jasig" additivity="true">
+    <logger name="org.jasig" additivity="false">
         <level value="INFO" />
         <appender-ref ref="cas" />
     </logger>
@@ -111,14 +107,24 @@
         the parameters posted to the login servlet including
         cleartext authentication credentials
     -->
-    <logger name="org.jasig.cas.web.flow" additivity="true">
-        <level value="INFO" />
+    <logger name="org.jasig.cas.web.flow" additivity="false">
+        <level value="WARN" />
         <appender-ref ref="cas" />
     </logger>
 
     <logger name="edu.asu" additivity="false">
         <level value="WARN" />
-        <appender-ref ref="console" />
+        <appender-ref ref="cas" />
+    </logger>
+
+    <logger name="edu.asu.cas" additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="cas" />
+    </logger>
+
+    <logger name="edu.asu.cas.web.HttpHeaderOverrideThemeResolver" additivity="false">
+        <level value="ERROR" />
+        <appender-ref ref="cas" />
     </logger>
 
     <!--
@@ -127,6 +133,7 @@
     -->
     <root>
         <level value="ERROR" />
-        <appender-ref ref="console" />
+        <appender-ref ref="cas" />
     </root>
+    
 </log4j:configuration>

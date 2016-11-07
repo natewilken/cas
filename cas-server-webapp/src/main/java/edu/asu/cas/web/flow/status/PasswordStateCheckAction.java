@@ -16,12 +16,12 @@ import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
 
 import edu.asu.cas.web.support.AccountStatus;
+import edu.asu.cas.web.support.AccountStatusException;
 import edu.asu.cas.web.support.PasswordState;
-import edu.asu.cas.web.support.PasswordStateException;
 import edu.asu.cas.web.support.edna.EDNAAccountStatus;
 import edu.asu.cas.web.util.PasswordChangeReferral;
 
-public class AccountStatusCheckAction extends AbstractAction {
+public class PasswordStateCheckAction extends AbstractAction {
 
 	@NotNull
 	protected String casLoginURL;
@@ -34,18 +34,18 @@ public class AccountStatusCheckAction extends AbstractAction {
 	
 	@Override
 	protected Event doExecute(final RequestContext context) throws Exception {
-		logger.debug("checking account status");
+		logger.trace("checking account status");
 		
 		Principal principal = (Principal)context.getFlowScope().get("principal");
 		String serviceTicketId = context.getRequestScope().getString("serviceTicketId");
-		logger.trace("serviceTicketId: " + serviceTicketId);
+		logger.trace("serviceTicketId [" + serviceTicketId + "]");
 		
 		if (principal == null) {
 			if (serviceTicketId == null) {
 				logger.warn("principal and service ticket unavailable");
 				return error();
 			} else {
-				logger.debug("not a login attempt; skipping password warning check");
+				logger.trace("not a login attempt; skipping password warning check");
 				return success();
 			}
 		}
@@ -54,14 +54,14 @@ public class AccountStatusCheckAction extends AbstractAction {
 			AccountStatus status = EDNAAccountStatus.getAccountStatus(principal.getAttributes());
 			PasswordState pwState = status.getPasswordState();
 			
-			if (pwState == PasswordState.OK) {
-				logger.trace("password state: " + pwState);
+			if (pwState == PasswordState.OK || pwState == PasswordState.UNKNOWN) {
+				logger.debug("password state [" + pwState + "] for principal [" + principal.getId() + "]");
 				return success();
 				
 			} else {
 				
 				if (pwState == PasswordState.WARN) {
-					logger.trace("password state: " + pwState + ", expiration: " + status.getPasswordExpirationDate());
+					logger.debug("password state [" + pwState + "], expiration [" + status.getPasswordExpirationDate() + "] for principal [" + principal.getId() + "]");
 					context.getRequestScope().put("passwordDaysRemaining", new Integer(status.getPasswordDaysRemaining()));
 					context.getRequestScope().put("passwordExpirationDate", status.getPasswordExpirationDate());
 					context.getRequestScope().put("passwordLastChangeDate", status.getLastPasswordChangeDate());
@@ -72,12 +72,12 @@ public class AccountStatusCheckAction extends AbstractAction {
 					
 				} else {
 					// PasswordState.EXPIRED or PasswordState.ADMIN_FORCED_CHANGE
-					logger.trace("password state: " + pwState);
+					logger.debug("password state [" + pwState + "] for principal [" + principal.getId() + "]");
 					return result("expired");
 				}
 			}
 			
-		} catch (PasswordStateException e) {
+		} catch (AccountStatusException e) {
 			logger.error("account status lookup failed", e);
 			return success(); // don't punish the user
 		}
@@ -93,7 +93,7 @@ public class AccountStatusCheckAction extends AbstractAction {
 		String serviceURL = (service != null) ? service.getResponse(null).getUrl() : null; // sanitized
 		
 		String url = getRedirectURL(username, forced, serviceURL);
-		logger.trace("redirect url: " + url);
+		logger.debug("redirect url [" + url + "] for username [" + username + "]");
 		
 		return url;
 	}

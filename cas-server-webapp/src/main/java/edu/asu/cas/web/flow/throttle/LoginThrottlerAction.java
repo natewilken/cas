@@ -19,11 +19,14 @@ public class LoginThrottlerAction {
 	public boolean isLockedOut(final RequestContext requestContext) throws Exception {
 		if (throttler.isEnabled()) {
 			ThrottleContext throttleContext = throttler.getThrottleContext(requestContext);
+			
 			if (throttler.isLockedOut(throttleContext)) {
-				logger.warn("Authentication attempt blocked for [" + throttleContext + "]");
+				logger.warn("auth attempt blocked for [" + throttleContext + "]");
+				
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	
@@ -32,21 +35,24 @@ public class LoginThrottlerAction {
 			ThrottleContext throttleContext = throttler.getThrottleContext(requestContext);
 			
 			if (SUCCESSFUL_AUTHENTICATION_EVENT.equals(requestContext.getCurrentEvent().getId())) {
-				logger.trace("auth was successful for [" + throttleContext + "]; clearing failures");
+				logger.debug("auth was successful for [" + throttleContext + "]; clearing failures");
 				throttler.clearFailures(throttleContext);
+				
 				return "success";
 				
 			} else {
-				logger.trace("auth failed; registering failure for [" + throttleContext + "]");
+				logger.debug("auth failed; registering failure for [" + throttleContext + "]");
 				throttler.registerFailure(throttleContext, requestContext);
 				
 				if (throttler.isLockedOut(throttleContext)) {
 					return "lockout";
+					
 				} else {
 					return "error";
 				}
 			}
 		}
+		
 		return requestContext.getCurrentEvent().getId();
 	}
 	

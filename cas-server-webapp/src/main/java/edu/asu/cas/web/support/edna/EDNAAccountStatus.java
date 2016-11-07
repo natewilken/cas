@@ -7,18 +7,21 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 
 import edu.asu.cas.web.support.AccountStatus;
+import edu.asu.cas.web.support.AccountStatusException;
+import edu.asu.cas.web.support.PasswordResetFactorState;
 import edu.asu.cas.web.support.PasswordState;
-import edu.asu.cas.web.support.PasswordStateException;
 
 public class EDNAAccountStatus implements AccountStatus {
 	protected PasswordState passwordState;
 	protected Date passwordExpirationDate;
 	protected Date lastPasswordChangeDate;
+	protected PasswordResetFactorState passwordResetFactorState;
 	
-	public EDNAAccountStatus(PasswordState passwordState, Date passwordExpirationDate, Date lastPasswordChangeDate) {
+	public EDNAAccountStatus(PasswordState passwordState, Date passwordExpirationDate, Date lastPasswordChangeDate, PasswordResetFactorState passwordResetFactorState) {
 		this.passwordState = passwordState;
 		this.passwordExpirationDate = passwordExpirationDate;
 		this.lastPasswordChangeDate = lastPasswordChangeDate;
+		this.passwordResetFactorState = passwordResetFactorState;
 	}
 
 	public PasswordState getPasswordState() {
@@ -44,35 +47,57 @@ public class EDNAAccountStatus implements AccountStatus {
 		return Days.daysBetween(DateTime.now(), new DateTime(passwordExpirationDate)).getDays();
 	}
 	
-	public static EDNAAccountStatus getAccountStatus(Map<String,Object> attributes) throws PasswordStateException {
+	public PasswordResetFactorState getPasswordResetFactorState() {
+		return passwordResetFactorState;
+	}
+	
+	public static EDNAAccountStatus getAccountStatus(Map<String,Object> attributes) throws AccountStatusException {
 		if (attributes == null || attributes.isEmpty()) {
-			throw new PasswordStateException("password state attributes are missing");
+			throw new AccountStatusException("account status attributes are missing");
 		}
 		
-		int pwStateFlag = (attributes.get("passwordStateFlag") != null) ? ((Number)attributes.get("passwordStateFlag")).intValue() : 0;
-		Date pwExpirationDate = (Date)attributes.get("passwordExpirationDate");
-		Date pwLastChangeDate = (Date)attributes.get("passwordLastChangeDate");
+		int pwStateFlag = (attributes.get("passwordStateFlag") != null) ? ((Number) attributes.get("passwordStateFlag")).intValue() : 0; // null attr ==> "OK"
+		Date pwExpirationDate = (Date) attributes.get("passwordExpirationDate");
+		Date pwLastChangeDate = (Date) attributes.get("passwordLastChangeDate");
+		
+		int loginDiversionState = (attributes.get("loginDiversionState") != null) ? ((Number) attributes.get("loginDiversionState")).intValue() : -1; // null attr ==> "NOT_ENROLLED"
+		
+		PasswordState pwState = PasswordState.OK;
+		PasswordResetFactorState pwResetFactorState = PasswordResetFactorState.NOT_ENROLLED;
 		
 		if (pwStateFlag == 2) {
-			return new EDNAAccountStatus(PasswordState.ADMIN_FORCED_CHANGE, pwExpirationDate, pwLastChangeDate);
+			pwState = PasswordState.ADMIN_FORCED_CHANGE;
 			
 		} else if (pwStateFlag == 1) {
 			
 			Date now = new Date();
 			
 			if (pwExpirationDate == null) {
-				throw new PasswordStateException("password state == 1, but expiration date is null");
+				pwState = PasswordState.UNKNOWN;
 				
 			} else if (now.before(pwExpirationDate)) {
-				return new EDNAAccountStatus(PasswordState.WARN, pwExpirationDate, pwLastChangeDate);
+				pwState = PasswordState.WARN;
 				
 			} else {
-				return new EDNAAccountStatus(PasswordState.EXPIRED, pwExpirationDate, pwLastChangeDate);
+				pwState = PasswordState.EXPIRED;
 			}
-			
-		} else {
-			return new EDNAAccountStatus(PasswordState.OK, pwExpirationDate, pwLastChangeDate);
 		}
+		
+		if (loginDiversionState == 0) {
+			pwResetFactorState = PasswordResetFactorState.OK;
+			
+		} else if (loginDiversionState == 1) {
+			pwResetFactorState = PasswordResetFactorState.WARN; 
+			
+		} else if (loginDiversionState == 2) {
+			pwResetFactorState = PasswordResetFactorState.FORCE;
+			
+		} else if (loginDiversionState > 2) {
+			// whatever state this is, it's unsupported
+			pwResetFactorState = PasswordResetFactorState.OK;
+		}
+		
+		return new EDNAAccountStatus(pwState, pwExpirationDate, pwLastChangeDate, pwResetFactorState);
 	}
 	
 }

@@ -8,7 +8,7 @@
     </description>
        
     <!-- Ticket Registry -->
-	<bean id="ticketRegistry" class="edu.asu.cas.riak.RiakCasTicketRegistry">
+	<bean id="ticketRegistry" class="edu.asu.cas.riak.RiakTicketRegistry">
 		<constructor-arg index="0" type="java.lang.String" value="http://localhost:3002/guster"/> <!-- url -->
 		<constructor-arg index="1" type="int" value="3000"/> <!-- timeoutMilliseconds -->
 		<constructor-arg index="2" type="int" value="50"/> <!-- maxConnections -->
